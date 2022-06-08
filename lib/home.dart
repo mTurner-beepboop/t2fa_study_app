@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'questions.dart';
 import 'auth/auth.dart';
 import 'local.dart';
 
@@ -92,6 +93,19 @@ class _HomeState extends State<Home> {
               ),
               child: const Text("Continue"),
             ),
+            ///TODO - DELETE THIS, DEV TESTING
+            TextButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const Questions()),
+                );
+              },
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all<Color>(Colors.black12),
+              ),
+              child: const Text("Recording test"),
+            )
           ],
         )
       )
