@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
+import '../firestore_save.dart';
 import 'card_auth.dart';
 import 'pendant_auth.dart';
 import 'cube_auth.dart';
 import 'pointer_pair.dart';
 import 'package:t2fa_usability_app/local.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 /// Below is a prototype for the collection of authentication methods, including how touch points are collected and a basic UI
 ///
-/// Still to do: Add in functionality for specific objects, data collection, attempt number, basically all of the functions that aren't just touch point collection
+/// Still to do: Add in functionality for specific objects, basically all of the functions that aren't just touch point collection
 
 class Auth extends StatefulWidget {
   const Auth({Key? key, required this.title, required this.object})
@@ -30,10 +30,8 @@ class _AuthState extends State<Auth> {
       []; //Represents a list of the pressed points for authentication
 
   var textContent = "No attempt yet"; //Mostly for debug currently, refers to the text in the debug box below the touch area
-  var firstAttempt = true; //TODO - Make it so this isn't needed anymore since we have _attemptNum
-  var _attemptNum = 1;
-  var initialTime = 0; ///Time currently starts from the moment the first touch happens, and ends when the authentication button is clicked successfully
-
+  var _attemptNum = 1; //1 indexed attempt number for readability in data
+  var initialTime = 0; //Time currently starts from the moment the first touch happens, and ends when the authentication button is clicked successfully
 
   final num _maxAttempts = 3; //Easy way to change max number of attempts allowed
 
@@ -73,45 +71,23 @@ class _AuthState extends State<Auth> {
     num _timeTaken = 0;
 
     //Check authentication success
-    bool succ = authFunc(allPoints);
-    if (succ) {
-      _timeTaken = endTimer();
-      //TODO - Add the success auth info collection
-      CollectionReference results =
-          FirebaseFirestore.instance.collection('results');
-      results
-          .add({
-            "timestamp": DateTime.now().millisecondsSinceEpoch,
-            "success": true,
-            "attempts": _attemptNum,
-            "object": getStringObject(widget.object),
-            "time": _timeTaken,
-          })
-          .then((value) => print("User added")) //Debug
-          .catchError((error) => print("Failed to add: $error")); //Debug
+    bool suc = authFunc(allPoints);
+    if (suc) {
+      _timeTaken = _endTimer();
+      firestoreSave(true, false, _attemptNum, getStringObject(widget.object), _timeTaken);
+      //TODO - Redirect away from this page
     }
 
     //Check authentication attempt number (if 3 then end)
     if (_attemptNum == _maxAttempts) {
-      //TODO - Add the failed auth info collection
-      _timeTaken = endTimer();
-      CollectionReference results =
-          FirebaseFirestore.instance.collection('results');
-      results
-          .add({
-            "timestamp": DateTime.now().millisecondsSinceEpoch,
-            "success": false,
-            "attempts": _attemptNum,
-            "object": getStringObject(widget.object),
-            "time": _timeTaken,
-          })
-          .then((value) => print("User added")) //Debug
-          .catchError((error) => print("Failed to add: $error")); //Debug
+      _timeTaken = _endTimer();
+      firestoreSave(false, false, _attemptNum, getStringObject(widget.object), _timeTaken);
+      //TODO - Redirect away from this page
     }
 
     //Alter required variables after attempt
     //First iterate attemptNum if last attempt failed and not final allowed attempt
-    if (!succ && _attemptNum != _maxAttempts) {
+    if (!suc && _attemptNum != _maxAttempts) {
       _attemptNum += 1;
     }
 
@@ -120,7 +96,7 @@ class _AuthState extends State<Auth> {
     for (PointerPair point in allPoints) {
       txt += " id: ${point.id} (${point.x}, ${point.y})";
     }
-    changeText(txt + ". Time taken: $_timeTaken");
+    _changeText(txt + ". Time taken: $_timeTaken");
 
     //Remove all points from the authentication
     while (allPoints.isNotEmpty) {
@@ -128,29 +104,41 @@ class _AuthState extends State<Auth> {
     }
   }
 
+  ///Called when user wants to skip this authentication for any reason
+  void _skipAuth() {
+    var _timeTaken = _endTimer();
+    firestoreSave(false, true, _attemptNum, getStringObject(widget.object), _timeTaken);
+    //TODO - Redirect away from this page
+  }
+
   ///Controls the text in the debug text box
-  void changeText(msg) {
+  void _changeText(msg) {
     setState(() {
       textContent = msg;
     });
   }
 
   ///Log current time for tracking authentication attempt time
-  void startTimer() {
+  void _startTimer() {
     setState(() {
-      firstAttempt = false;
       initialTime = DateTime.now().millisecondsSinceEpoch;
     });
   }
 
   ///Calculate final time and set initial timer back to zero
-  num endTimer() {
+  num _endTimer() {
     num timeElapsed = DateTime.now().millisecondsSinceEpoch - initialTime;
     setState(() {
-      firstAttempt = true;
       _attemptNum = 1;
     });
     return timeElapsed;
+  }
+
+  ///Override initialisation to ensure time taken to authenticate is collected from moment the page opens
+  @override
+  void initState() {
+    super.initState();
+    _startTimer();
   }
 
   @override
@@ -168,11 +156,6 @@ class _AuthState extends State<Auth> {
             Listener(
               onPointerDown: (event) {
                 ///This should be consistent for each object
-                //Check if first touch, if so, log current time
-                if (firstAttempt) {
-                  firstAttempt = false;
-                  startTimer();
-                }
 
                 //Event contains all the PointerEvent details
                 var x = event.position.dx;
@@ -235,7 +218,12 @@ class _AuthState extends State<Auth> {
                   backgroundColor:
                       MaterialStateProperty.all<Color>(Colors.black12)),
               child: const Text("Return home"),
-            )
+            ),
+            TextButton(
+                onPressed: () {
+                  _skipAuth();
+                },
+                child: const Text("Press here to skip auth")),
           ],
         ),
       ),
