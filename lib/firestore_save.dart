@@ -1,5 +1,3 @@
-
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 void firestoreSave(bool suc, bool skip, int attemptNum, String object, num timeTaken){
