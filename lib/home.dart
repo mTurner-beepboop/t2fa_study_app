@@ -74,13 +74,49 @@ class _HomeState extends State<Home> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
+      drawer: Drawer(
+        child: ListView(
+          padding:EdgeInsets.zero,
+          children: <Widget>[
+            const DrawerHeader(
+              decoration: BoxDecoration(
+                color: Colors.indigo
+              ),
+              child: Text("Menu"),
+            ),
+            ListTile(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const Questions()),
+                );
+              },
+              leading: const Icon(Icons.question_answer),
+              title: const Text("Questionnaire"),
+            )
+          ]
+        )
+      ),
       body: Center(
         child: Column(
           children: [
-            const Text("Thank you for participating in the Tangible 2-Factor Authentication follow-up study, press the button below to perform and authentication!"),
-            widget.object == null
-            ? const Text("You have yet to select an object")
-            : Text(getStringObject(widget.object)),
+            const SizedBox(
+              height: 20,
+            ),
+            const Center(
+              child: Text("Thank you for participating in the Tangible 2-Factor Authentication follow-up study, press the button below to perform and authentication!", textAlign: TextAlign.center,),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            Center(
+              child: widget.object == null
+                     ? const Text("You have yet to select an object")
+                     : Text(getStringObject(widget.object)),
+            ),
+            const SizedBox(
+              height: 40,
+            ),
             TextButton(
               onPressed: () {
                 Navigator.push(
@@ -93,19 +129,6 @@ class _HomeState extends State<Home> {
               ),
               child: const Text("Continue"),
             ),
-            ///TODO - DELETE THIS, DEV TESTING
-            TextButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const Questions()),
-                );
-              },
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(Colors.black12),
-              ),
-              child: const Text("Recording test"),
-            )
           ],
         )
       )
