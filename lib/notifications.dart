@@ -8,7 +8,7 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 
   //TODO - Add logic for questionnaire request
   print(message.data);
-;}
+}
 
 ///Handler for foreground messages, this will likely not really be needed for the most part,
 ///however it does generate the token that I think we'll need to sending notifications to
