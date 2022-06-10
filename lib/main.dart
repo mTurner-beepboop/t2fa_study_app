@@ -48,6 +48,7 @@ void main() async {
   Objects? obj;
   if (storedObj == "None"){
     first = true;
+    await FirebaseMessaging.instance.subscribeToTopic("active_participant");
   } else {
     obj = getEnumObject(storedObj);
   }
