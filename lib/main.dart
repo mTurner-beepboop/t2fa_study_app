@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:t2fa_usability_app/local.dart';
+import 'package:t2fa_usability_app/utility/local.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import 'utility/firebase_options.dart';
@@ -42,26 +42,22 @@ void main() async {
     sound: true,
   );
 
-  //Check if this is the first start by looking for the file on disk]
+  //Check if this is the first start by looking for the file on disk
   String storedObj = await getObject();
   var first = false;
-  Objects? obj;
   if (storedObj == "None"){
     first = true;
-    await FirebaseMessaging.instance.subscribeToTopic("active_participant");
-  } else {
-    obj = getEnumObject(storedObj);
+    FirebaseMessaging.instance.subscribeToTopic("active_participant");
   }
 
   //Display the home page here
-  runApp(MainApp(firstStart: first, object: obj));
+  runApp(MainApp(firstStart: first));
 }
 
 ///Create the main app state
 class MainApp extends StatefulWidget {
-  const MainApp({Key? key, required this.firstStart, this.object}) : super(key: key);
+  const MainApp({Key? key, required this.firstStart}) : super(key: key);
 
-  final Objects? object;
   final bool firstStart;
 
   @override
@@ -83,7 +79,7 @@ class _MainAppState extends State<MainApp> {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: Home(title: 'Home page', firstStart: widget.firstStart, object:widget.object),
+      home: Home(title: 'Home page', firstStart: widget.firstStart),
     );
   }
 }

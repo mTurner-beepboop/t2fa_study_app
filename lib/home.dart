@@ -3,16 +3,15 @@ import 'withdraw.dart';
 import 'questions.dart';
 import 'tutorial.dart';
 import 'auth/auth.dart';
-import 'local.dart';
+import 'utility/local.dart';
 
 ///This file contains the code for the main home page of the app. Currently the
 ///only thing on the home page will be a button to authenticate, however I'm
 ///sure more will be needed soon
 
 class Home extends StatefulWidget {
-  const Home({Key? key, required this.title, required this.firstStart, this.object}) : super(key: key);
+  const Home({Key? key, required this.title, required this.firstStart}) : super(key: key);
 
-  final Objects? object;
   final bool firstStart;
   final String title;
 
@@ -21,14 +20,27 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  Objects? object;
+  String objText = "You have yet to select an object";
+
   @override
   void initState(){
     super.initState();
     //Deal with first start information collection
     if (widget.firstStart){
-      print("First start");
       WidgetsBinding.instance.addPostFrameCallback((_) {_firstStartDialog();});
     }
+    //Read object from file
+    _updateObj();
+  }
+
+  void _updateObj() {
+    setState(() {
+      getObject().then((obj) {
+        object = getEnumObject(obj);
+        objText = "The object you have been assigned is: " + getStringObject(object);
+      });
+    });
   }
 
   ///Pop-up for first start
@@ -57,13 +69,19 @@ class _HomeState extends State<Home> {
         }
     )) {
       case Objects.cube:
-        writeObject("cube");
+        writeObject("cube").then((file) {
+          _updateObj();
+        });
         break;
       case Objects.card:
-        writeObject("card");
+        writeObject("card").then((file) {
+          _updateObj();
+        });
         break;
       case Objects.pendant:
-        writeObject("pendant");
+        writeObject("pendant").then((file) {
+          _updateObj();
+        });
         break;
       case null:
         break;
@@ -132,9 +150,7 @@ class _HomeState extends State<Home> {
             height: 20,
           ),
           Center(
-            child: widget.object == null
-                   ? const Text("You have yet to select an object")
-                   : Text("The object you have been assigned is: " + getStringObject(widget.object)),
+            child: Text(objText)
           ),
           const SizedBox(
             height: 40,
@@ -143,7 +159,7 @@ class _HomeState extends State<Home> {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => Auth(title: "Authentication Page", object: widget.object)),
+                MaterialPageRoute(builder: (context) => Auth(title: "Authentication Page", object: object)),
               );
             },
             style: ButtonStyle(

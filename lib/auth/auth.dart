@@ -4,7 +4,7 @@ import 'card_auth.dart';
 import 'pendant_auth.dart';
 import 'cube_auth.dart';
 import 'pointer_pair.dart';
-import 'package:t2fa_usability_app/local.dart';
+import 'package:t2fa_usability_app/utility/local.dart';
 
 /// Below is a prototype for the collection of authentication methods, including how touch points are collected and a basic UI
 ///
@@ -32,6 +32,8 @@ class _AuthState extends State<Auth> {
   var textContent = "No attempt yet"; //Mostly for debug currently, refers to the text in the debug box below the touch area
   var _attemptNum = 1; //1 indexed attempt number for readability in data
   var initialTime = 0; //Time currently starts from the moment the first touch happens, and ends when the authentication button is clicked successfully
+
+  List<double> boxSizes = [];
 
   final num _maxAttempts = 3; //Easy way to change max number of attempts allowed
 
@@ -139,6 +141,23 @@ class _AuthState extends State<Auth> {
   void initState() {
     super.initState();
     _startTimer();
+    //Set the size of the boxes for listening depending on which object the user has
+    //TODO - Set these sizes to the correct ones, make sure consistent across devices.
+    setState(() {
+      switch (widget.object){
+        case (Objects.cube):
+          boxSizes = [300, 300];
+          break;
+        case (Objects.card):
+          boxSizes = [1000, 400];
+          break;
+        case (Objects.pendant):
+          boxSizes = [200, 200];
+          break;
+        default:
+          boxSizes=[0,0];
+      }
+    });
   }
 
   @override
@@ -188,9 +207,8 @@ class _AuthState extends State<Auth> {
               },
               child: Container(
                 ///This is the actual area which collects the touch point information
-                width: 300,
-                height:
-                    300, //So if we want a little outline for where to put things, this is where that'll be changed, not entirely sure of how each number relates to size though
+                width: boxSizes[1],
+                height: boxSizes[0],
                 decoration: BoxDecoration(
                   color: Colors.transparent,
                   border: Border.all(width: 2.0, color: Colors.black),
