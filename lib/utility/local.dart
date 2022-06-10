@@ -52,15 +52,29 @@ Future<String> getObject() async {
   try{
     final f = await _localFile;
     final contents = await f.readAsString();
-    return contents;
+    String obj = contents.split(",")[0];
+    return obj;
   }
   catch (e) {
     return "None";
   }
 }
 
-///Create and write the object chosen to file
-Future<File> writeObject(String obj) async {
+///Get the participant number from the file
+Future<int> getParticipantNum() async {
+  try{
+    final f = await _localFile;
+    final contents = await f.readAsString();
+    int num = int.parse(contents.split(",")[1]);
+    return num;
+  }
+  catch (e) {
+    return -1;
+  }
+}
+
+///Create and write the object chosen and participant number specified to file
+Future<File> writeObject(String obj, int? num) async {
   final f = await _localFile;
-  return f.writeAsString(obj);
+  return f.writeAsString(obj + "," + num.toString());
 }

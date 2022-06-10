@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'withdraw.dart';
 import 'questions.dart';
 import 'tutorial.dart';
@@ -45,6 +46,8 @@ class _HomeState extends State<Home> {
 
   ///Pop-up for first start
   Future<void> _firstStartDialog() async {
+    String objName;
+    int? participantNum;
     switch (await showDialog<Objects>(
         context: context,
         barrierDismissible: false,
@@ -69,23 +72,70 @@ class _HomeState extends State<Home> {
         }
     )) {
       case Objects.cube:
-        writeObject("cube").then((file) {
-          _updateObj();
-        });
+        objName = "cube";
         break;
       case Objects.card:
-        writeObject("card").then((file) {
-          _updateObj();
-        });
+        objName = "card";
         break;
       case Objects.pendant:
-        writeObject("pendant").then((file) {
-          _updateObj();
-        });
+        objName = "pendant";
         break;
       case null:
+        objName = "None";
         break;
     }
+
+    var _formKey = GlobalKey<FormState>();
+    await showDialog<int>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("First Start"),
+          content: Stack(
+            children: <Widget>[
+              const Text("Please input your participant number"),
+              Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    TextFormField(
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                      ],
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter your participant number';
+                        }
+                        return null;
+                      },
+                      onSaved: (value) {
+                        participantNum = int.parse(value!);
+                      }
+                    ),
+                    TextButton(
+                      child: const Text("Submit"),
+                      onPressed: () {
+                        if (_formKey.currentState!.validate()){
+                          _formKey.currentState!.save();
+                          Navigator.pop(context);
+                        }
+                      },
+                    ),
+                  ]
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+
+    writeObject(objName, participantNum).then((_) {
+      _updateObj();
+    });
   }
 
   @override
