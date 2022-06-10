@@ -12,6 +12,11 @@ class Withdraw extends StatefulWidget {
 class _WithdrawState extends State<Withdraw> {
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Withdraw"),
+      ),
+      body: const Text("Here will be the method of withdrawal/a button to do it automatically"),
+    );
   }
 }

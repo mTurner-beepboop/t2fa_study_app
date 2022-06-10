@@ -4,8 +4,8 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:t2fa_usability_app/local.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
-import 'firebase_options.dart';
-import 'notifications.dart';
+import 'utility/firebase_options.dart';
+import 'utility/notifications.dart';
 import 'home.dart';
 
 //TODO add the firebase store or whichever one we use
