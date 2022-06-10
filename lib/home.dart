@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'withdraw.dart';
 import 'questions.dart';
+import 'tutorial.dart';
 import 'auth/auth.dart';
 import 'local.dart';
 
@@ -93,44 +95,63 @@ class _HomeState extends State<Home> {
               },
               leading: const Icon(Icons.question_answer),
               title: const Text("Questionnaire"),
+            ),
+            ListTile(
+              onTap: (){
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const Tutorial()),
+                );
+              },
+              leading: const Icon(Icons.help_outline),
+              title: const Text("How to Use")
+            ),
+            ListTile(
+              onTap: (){
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const Withdraw()),
+                );
+              },
+              leading: const Icon(Icons.highlight_remove),
+              title: const Text("Withdraw participation"),
             )
           ]
         )
       ),
-      body: Center(
-        child: Column(
-          children: [
-            const SizedBox(
-              height: 20,
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const SizedBox(
+            height: 20,
+          ),
+          const Center(
+            child: Text("Thank you for participating in the Tangible 2-Factor Authentication follow-up study, press the button below to perform and authentication!", textAlign: TextAlign.center,),
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          Center(
+            child: widget.object == null
+                   ? const Text("You have yet to select an object")
+                   : Text("The object you have been assigned is: " + getStringObject(widget.object)),
+          ),
+          const SizedBox(
+            height: 40,
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Auth(title: "Authentication Page", object: widget.object)),
+              );
+            },
+            style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all<Color>(Colors.black12),
             ),
-            const Center(
-              child: Text("Thank you for participating in the Tangible 2-Factor Authentication follow-up study, press the button below to perform and authentication!", textAlign: TextAlign.center,),
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            Center(
-              child: widget.object == null
-                     ? const Text("You have yet to select an object")
-                     : Text(getStringObject(widget.object)),
-            ),
-            const SizedBox(
-              height: 40,
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => Auth(title: "Authentication Page", object: widget.object)),
-                );
-              },
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(Colors.black12),
-              ),
-              child: const Text("Continue"),
-            ),
-          ],
-        )
+            child: const Text("Continue"),
+          ),
+        ],
       )
     );
   }
