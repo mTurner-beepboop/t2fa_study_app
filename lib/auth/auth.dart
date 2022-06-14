@@ -106,7 +106,7 @@ class _AuthState extends State<Auth> {
     //TODO - Remove this debugging information in production
     String txt = "Last attempt included:";
     for (PointerPair point in allPoints) {
-      txt += " id: ${point.id} (${point.x}, ${point.y})";
+      txt += " id: ${point.id} (${point.x}, ${point.y}) ${point.size}";
     }
     _changeText(txt + ". Time taken: $_timeTaken");
 
@@ -186,12 +186,12 @@ class _AuthState extends State<Auth> {
             Listener(
               onPointerDown: (event) {
                 ///This should be consistent for each object
-
                 //Event contains all the PointerEvent details
                 var x = event.position.dx;
                 var y = event.position.dy;
-                var id = event.pointer; //Unique identifier for the point.
-                _addPoint(PointerPair(x, y, id));
+                var size = event.radiusMinor;
+                var id = event.pointer; //Unique identifier for the point
+                _addPoint(PointerPair(x, y, size, id));
               },
               onPointerUp: (event) {
                 ///This will in particular be unique for each object
