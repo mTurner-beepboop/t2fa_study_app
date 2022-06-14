@@ -30,11 +30,12 @@ class _AuthState extends State<Auth> {
   List<PointerPair> allPoints =
       []; //Represents a list of the pressed points for authentication
 
-  var textContent = "No attempt yet"; //Mostly for debug currently, refers to the text in the debug box below the touch area
+  String _instructions = "";
+  String _textContent = "No attempt yet"; //Mostly for debug currently, refers to the text in the debug box below the touch area
   var _attemptNum = 1; //1 indexed attempt number for readability in data
-  var initialTime = 0; //Time currently starts from the moment the first touch happens, and ends when the authentication button is clicked successfully
+  var _initialTime = 0; //Time currently starts from the moment the first touch happens, and ends when the authentication button is clicked successfully
 
-  List<double> boxSizes = [];
+  List<double> _boxSizes = [];
 
   final num _maxAttempts = 3; //Easy way to change max number of attempts allowed
 
@@ -126,20 +127,20 @@ class _AuthState extends State<Auth> {
   ///Controls the text in the debug text box
   void _changeText(msg) {
     setState(() {
-      textContent = msg;
+      _textContent = msg;
     });
   }
 
   ///Log current time for tracking authentication attempt time
   void _startTimer() {
     setState(() {
-      initialTime = DateTime.now().millisecondsSinceEpoch;
+      _initialTime = DateTime.now().millisecondsSinceEpoch;
     });
   }
 
   ///Calculate final time and set initial timer back to zero
   num _endTimer() {
-    num timeElapsed = DateTime.now().millisecondsSinceEpoch - initialTime;
+    num timeElapsed = DateTime.now().millisecondsSinceEpoch - _initialTime;
     setState(() {
       _attemptNum = 1;
     });
@@ -156,16 +157,19 @@ class _AuthState extends State<Auth> {
     setState(() {
       switch (widget.object){
         case (Objects.cube):
-          boxSizes = [300, 300];
+          _boxSizes = [300, 300];
+          _instructions = "Touch the correct 4 sides to the screen then press authenticate";
           break;
         case (Objects.card):
-          boxSizes = [450, 300];
+          _boxSizes = [450, 300];
+          _instructions = "Perform the sliding action over the dots while the object is on the screen, touch the square portion, then press authenticate";
           break;
         case (Objects.pendant):
-          boxSizes = [200, 200];
+          _boxSizes = [200, 200];
+          _instructions = "Ensure the object is in the correct combination, touch it to the screen and press authenticate";
           break;
-        default:
-          boxSizes=[0,0];
+        default: //Error case
+          _boxSizes=[0,0];
       }
     });
   }
@@ -176,6 +180,30 @@ class _AuthState extends State<Auth> {
       appBar: AppBar(
         title: Text(widget.title),
         automaticallyImplyLeading: false,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.help_outline),
+            onPressed: () => showDialog(
+                context: context,
+                builder: (context) {
+                  return AlertDialog(
+                    title: Text("Help: ${getStringObject(widget.object)}"),
+                    content: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(_instructions),
+                        const SizedBox(height: 15),
+                        TextButton(
+                            onPressed: () {Navigator.pop(context);},
+                            child: const Text("Close")
+                        ),
+                      ]
+                    )
+                  );
+                }
+            ),
+          )
+        ]
       ),
       body: Center(
         ///This is where all the actual UI stuff goes
@@ -218,15 +246,15 @@ class _AuthState extends State<Auth> {
               },
               child: Container(
                 ///This is the actual area which collects the touch point information
-                width: boxSizes[1],
-                height: boxSizes[0],
+                width: _boxSizes[1],
+                height: _boxSizes[0],
                 decoration: BoxDecoration(
                   color: Colors.transparent,
                   border: Border.all(width: 2.0, color: Colors.black),
                 ),
               ),
             ),
-            Text(textContent),
+            Text(_textContent),
             TextButton(
               ///The authentication attempt button
               onPressed: () {
