@@ -149,7 +149,7 @@ class _AuthState extends State<Auth> {
           boxSizes = [300, 300];
           break;
         case (Objects.card):
-          boxSizes = [1000, 400];
+          boxSizes = [450, 300];
           break;
         case (Objects.pendant):
           boxSizes = [200, 200];
