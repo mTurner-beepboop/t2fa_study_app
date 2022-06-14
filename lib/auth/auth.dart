@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../questions.dart';
 import '../utility/firestore_save.dart';
 import 'card_auth.dart';
 import 'pendant_auth.dart';
@@ -48,6 +49,15 @@ class _AuthState extends State<Auth> {
     points.removeWhere((item) => item.id == pointerId);
   }
 
+  void _redirectToQuestions(skip) {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (BuildContext context) => Questions(skip: skip),
+      ),
+    );
+  }
+
   ///Here we can add the authentication logic, this whole class will need to be different for each of the objects, but regardless here is where the final check should happen
   ///For now we just have a return of the location of all the points in a snack bar
   ///This is probably where we can handle the file writing
@@ -77,14 +87,14 @@ class _AuthState extends State<Auth> {
     if (suc) {
       _timeTaken = _endTimer();
       firestoreSave(true, false, _attemptNum, getStringObject(widget.object), _timeTaken);
-      //TODO - Redirect away from this page
+      _redirectToQuestions(false);
     }
 
     //Check authentication attempt number (if 3 then end)
     if (_attemptNum == _maxAttempts) {
       _timeTaken = _endTimer();
       firestoreSave(false, false, _attemptNum, getStringObject(widget.object), _timeTaken);
-      //TODO - Redirect away from this page
+      _redirectToQuestions(false);
     }
 
     //Alter required variables after attempt
@@ -110,7 +120,7 @@ class _AuthState extends State<Auth> {
   void _skipAuth() {
     var _timeTaken = _endTimer();
     firestoreSave(false, true, _attemptNum, getStringObject(widget.object), _timeTaken);
-    //TODO - Redirect away from this page
+    _redirectToQuestions(true);
   }
 
   ///Controls the text in the debug text box

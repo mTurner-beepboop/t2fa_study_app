@@ -79,7 +79,7 @@ class _MainAppState extends State<MainApp> {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: Home(title: 'Home page', firstStart: widget.firstStart),
+      home: Home(firstStart: widget.firstStart),
     );
   }
 }

@@ -11,10 +11,10 @@ import 'utility/local.dart';
 ///sure more will be needed soon
 
 class Home extends StatefulWidget {
-  const Home({Key? key, required this.title, required this.firstStart}) : super(key: key);
+  const Home({Key? key, required this.firstStart}) : super(key: key);
 
   final bool firstStart;
-  final String title;
+  final String title = "Home page";
 
   @override
   State<Home> createState() => _HomeState();
@@ -158,7 +158,7 @@ class _HomeState extends State<Home> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const Questions()),
+                  MaterialPageRoute(builder: (context) => const Questions(skip: false)),
                 );
               },
               leading: const Icon(Icons.question_answer),

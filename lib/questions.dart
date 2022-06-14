@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 
+import 'home.dart';
+
 class Questions extends StatefulWidget {
-  const Questions({Key? key}) : super(key: key);
+  const Questions({Key? key, required this.skip}) : super(key: key);
+
+  final bool skip;
 
   @override
   State<Questions> createState() => _QuestionsState();
@@ -134,6 +138,12 @@ class _QuestionsFormState extends State<QuestionsForm> {
                 setState((){
                   error = null;
                 });
+                Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (BuildContext context) => const Home(firstStart: false)
+                    ),
+                );
               }
               else {
                 setState((){
