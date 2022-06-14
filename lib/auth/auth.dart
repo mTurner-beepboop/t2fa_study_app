@@ -175,6 +175,7 @@ class _AuthState extends State<Auth> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
+        automaticallyImplyLeading: false,
       ),
       body: Center(
         ///This is where all the actual UI stuff goes
@@ -226,8 +227,6 @@ class _AuthState extends State<Auth> {
               ),
             ),
             Text(textContent),
-
-            ///Debug for authentication attempt information
             TextButton(
               ///The authentication attempt button
               onPressed: () {
