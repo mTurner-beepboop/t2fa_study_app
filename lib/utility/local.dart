@@ -78,3 +78,24 @@ Future<File> writeObject(String obj, int? num) async {
   final f = await _localFile;
   return f.writeAsString(obj + "," + num.toString());
 }
+
+///Get Withdrawn
+Future<bool> getWithdrawn() async {
+  final path = await _localPath;
+  try {
+    final f = File('$path/inactive.txt');
+    final contents = await f.readAsString();
+    bool active = contents.isEmpty; //If file is empty, then user still active
+    return active;
+  }
+  catch (e) {
+    return true; //If failed to read file, doesn't exist, hence active
+  }
+}
+
+///Set Withdrawn
+Future<File> setWithdrawn() async {
+  final path = await _localPath;
+  final f = File('$path/inactive.txt');
+  return f.writeAsString('false');
+}

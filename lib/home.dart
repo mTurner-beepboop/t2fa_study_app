@@ -36,8 +36,8 @@ class _HomeState extends State<Home> {
   }
 
   void _updateObj() {
-    setState(() {
-      getObject().then((obj) {
+    getObject().then((obj) {
+      setState((){
         object = getEnumObject(obj);
         objText = "The object you have been assigned is: " + getStringObject(object);
       });
