@@ -2,6 +2,11 @@ import 'package:flutter/material.dart';
 
 import 'home.dart';
 
+//TODO - Save answers to firestore
+
+///Questions page - This is where the user is directed to upon completion of an
+///authentication attempt. Currently contains question templates for both free text input
+///and multiple choice questions
 class Questions extends StatefulWidget {
   const Questions({Key? key, required this.skip}) : super(key: key);
 

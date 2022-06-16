@@ -1,18 +1,14 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
-///Handler for background messages, notifications will display automatically, handle other messages here
-///e.g. data
+///Handler for background messages, notifications will display automatically, if
+///any other type of message is received, deal with that here
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
-
-  //TODO - Add logic for questionnaire request
-  print(message.data);
 }
 
-///Handler for foreground messages, this will likely not really be needed for the most part,
-///however it does generate the token that I think we'll need to sending notifications to
-///the device - correction, I think that is for debugging and test purposes
+///Handler for foreground messages, in this case notifications do not display
+///automatically TODO - Make notifications display
 Future<void> firebaseMessagingForegroundHandler() async {
   late FirebaseMessaging messaging;
   messaging = FirebaseMessaging.instance;

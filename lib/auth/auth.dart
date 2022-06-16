@@ -7,10 +7,10 @@ import 'cube_auth.dart';
 import 'pointer_pair.dart';
 import 'package:t2fa_usability_app/utility/local.dart';
 
-/// Below is a prototype for the collection of authentication methods, including how touch points are collected and a basic UI
-///
-/// Still to do: Add in functionality for specific objects, basically all of the functions that aren't just touch point collection
-
+///Authentication page - This is where the user will authenticate the object
+///Contains: authentication logic (each function derived from the files of the
+///same name), a simple help popup on the appbar, and a method of timing the
+///attempt
 class Auth extends StatefulWidget {
   const Auth({Key? key, required this.title, required this.object})
       : super(key: key);
@@ -89,14 +89,14 @@ class _AuthState extends State<Auth> {
     bool suc = authFunc(allPoints);
     if (suc) {
       _timeTaken = _endTimer();
-      firestoreSave(true, false, _attemptNum, getStringObject(widget.object), _timeTaken, _participantNum);
+      firestoreAuthSave(true, false, _attemptNum, getStringObject(widget.object), _timeTaken, _participantNum);
       _redirectToQuestions(false);
     }
 
     //Check authentication attempt number (if 3 then end)
     if (_attemptNum == _maxAttempts) {
       _timeTaken = _endTimer();
-      firestoreSave(false, false, _attemptNum, getStringObject(widget.object), _timeTaken, _participantNum);
+      firestoreAuthSave(false, false, _attemptNum, getStringObject(widget.object), _timeTaken, _participantNum);
       _redirectToQuestions(false);
     }
 
@@ -122,7 +122,7 @@ class _AuthState extends State<Auth> {
   ///Called when user wants to skip this authentication for any reason
   void _skipAuth() {
     var _timeTaken = _endTimer();
-    firestoreSave(false, true, _attemptNum, getStringObject(widget.object), _timeTaken, _participantNum);
+    firestoreAuthSave(false, true, _attemptNum, getStringObject(widget.object), _timeTaken, _participantNum);
     _redirectToQuestions(true);
   }
 

@@ -6,10 +6,10 @@ import 'tutorial.dart';
 import 'auth/auth.dart';
 import 'utility/local.dart';
 
-///This file contains the code for the main home page of the app. Currently the
-///only thing on the home page will be a button to authenticate, however I'm
-///sure more will be needed soon
-
+///Home page - This is the first default screen the loads
+///Contains: Menu for access to Withdraw, and Help pages, (Questionnaire also
+///for debugging purposes) and the link to the authentication page. Also deals
+///with some data collection for first start (eg model, participant number)
 class Home extends StatefulWidget {
   const Home({Key? key, required this.firstStart}) : super(key: key);
 
@@ -133,7 +133,7 @@ class _HomeState extends State<Home> {
       },
     );
 
-    writeObject(objName, participantNum).then((_) {
+    writeInitFile(objName, participantNum).then((_) {
       _updateObj();
     });
   }

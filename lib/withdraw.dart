@@ -2,18 +2,17 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'utility/local.dart';
 
-//TODO - Implement a way to withdraw from the study (probably just send in a request to firebase with id of participant and such)
-
-///Currently, this page offers users a way to remove themselves from the study by unsubscribing from the notification topic -
-///ie they won't receive reminders anymore. This may need to be updated to save a document to firestore so that
-///we can keep track of which participants have withdrawn. Note: Doesn't seem to be a way to see if a user is subscribed to a topic,
-///so assuming that if you come to this page you are still in the study.
-
+///Utility function to unsubscribe from the notification topic in firebase and set withdrawn status
 Future<void> unsubscribe() async {
   await FirebaseMessaging.instance.unsubscribeFromTopic("active_participant");
   await setWithdrawn();
 }
 
+///Withdraw page - This is where the user can opt out of the study in app. Currently,
+///on pressing the button the user is asked to confirm, upon confirmation, the
+///unsubscribe function is called (see above), and they are directed to notify
+///those running the study. A file is checked to see if the user previously
+///withdrew on whether to display the withdraw button.
 class Withdraw extends StatefulWidget {
   const Withdraw({Key? key}) : super(key: key);
 
@@ -63,7 +62,7 @@ class _WithdrawState extends State<Withdraw> {
                         unsubscribe().then((result) {
                           setState(() {
                             isActive = false;
-                            text = "You have withdrawn from the study. Please contact ... to confirm this and discuss any compensation.";
+                            text = "You have withdrawn from the study. Please contact ... to confirm this and discuss any compensation."; //TODO - update this with actual information
                           });
                           Navigator.pop(context, 'Yes');
                         });

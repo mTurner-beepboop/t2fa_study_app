@@ -8,9 +8,9 @@ import 'utility/firebase_options.dart';
 import 'utility/notifications.dart';
 import 'home.dart';
 
-//TODO add the firebase store or whichever one we use
-
-///Set up the app
+///Main drive for App startup, sets up notification settings, firebase connection
+///deals with some first start logic and passes the first start variable to Home
+///which deals with the rest. Additionally, this is where the app theme is defined
 void main() async {
   //First initialise connection to firebase
   WidgetsFlutterBinding.ensureInitialized();

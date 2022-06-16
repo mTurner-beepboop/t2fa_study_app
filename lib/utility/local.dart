@@ -2,10 +2,12 @@ import 'dart:io';
 import 'dart:async';
 
 import 'package:path_provider/path_provider.dart';
+import 'firestore_save.dart';
 
-///Relate enum for objects
+///Related enum for objects
 enum Objects {pendant, cube, card}
 
+///Translator function from string to enum for Objects
 Objects? getEnumObject(String obj) {
   if (obj == "cube"){
     return Objects.cube;
@@ -19,6 +21,7 @@ Objects? getEnumObject(String obj) {
   return null;
 }
 
+///Translator function from enum to string for Objects
 String getStringObject(Objects? obj) {
   if (obj == Objects.cube){
     return "cube";
@@ -40,14 +43,14 @@ Future<String> get _localPath async {
   return directory.path;
 }
 
+///Returns the local path to the first start file
 Future<File> get _localFile async {
   final path = await _localPath;
   return File('$path/init.txt');
 }
 
-///Simultaneously checks file exists and return the contents of the file (currently
-///assuming file contains only object as most things will be stored in firebase, but
-///this will likely change a bit in the future)
+///Simultaneously checks file exists and returns the object stored
+///(Returns "None" if no file)
 Future<String> getObject() async {
   try{
     final f = await _localFile;
@@ -60,7 +63,8 @@ Future<String> getObject() async {
   }
 }
 
-///Get the participant number from the file
+///Simultaneously checks file exists and returns the participant num stored
+///(Returns -1 if no file)
 Future<int> getParticipantNum() async {
   try{
     final f = await _localFile;
@@ -74,12 +78,12 @@ Future<int> getParticipantNum() async {
 }
 
 ///Create and write the object chosen and participant number specified to file
-Future<File> writeObject(String obj, int? num) async {
+Future<File> writeInitFile(String obj, int? num) async {
   final f = await _localFile;
   return f.writeAsString(obj + "," + num.toString());
 }
 
-///Get Withdrawn
+///Get Withdrawn status from file storage
 Future<bool> getWithdrawn() async {
   final path = await _localPath;
   try {
@@ -93,8 +97,12 @@ Future<bool> getWithdrawn() async {
   }
 }
 
-///Set Withdrawn
+///Set Withdrawn status in file storage
 Future<File> setWithdrawn() async {
+  //Write status to firestore with participant num
+  getParticipantNum().then((value) => firestoreWithdrawSave(value));
+
+  //Write locally
   final path = await _localPath;
   final f = File('$path/inactive.txt');
   return f.writeAsString('false');
