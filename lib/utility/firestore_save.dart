@@ -1,11 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-void firestoreSave(bool suc, bool skip, int attemptNum, String object, num timeTaken){
+void firestoreSave(bool suc, bool skip, int attemptNum, String object, num timeTaken, num id){
   CollectionReference results =
   FirebaseFirestore.instance.collection('results');
   results
       .add({
     "timestamp": DateTime.now().millisecondsSinceEpoch,
+    "id": id,
     "success": suc,
     "skip": skip,
     "attempts": attemptNum,

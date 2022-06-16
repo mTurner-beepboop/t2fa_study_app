@@ -39,6 +39,8 @@ class _AuthState extends State<Auth> {
 
   final num _maxAttempts = 3; //Easy way to change max number of attempts allowed
 
+  num _participantNum = -1;
+
   ///Add a new pointer pair to the list of active pointers
   void _addPoint(PointerPair p) {
     points.add(p);
@@ -87,14 +89,14 @@ class _AuthState extends State<Auth> {
     bool suc = authFunc(allPoints);
     if (suc) {
       _timeTaken = _endTimer();
-      firestoreSave(true, false, _attemptNum, getStringObject(widget.object), _timeTaken);
+      firestoreSave(true, false, _attemptNum, getStringObject(widget.object), _timeTaken, _participantNum);
       _redirectToQuestions(false);
     }
 
     //Check authentication attempt number (if 3 then end)
     if (_attemptNum == _maxAttempts) {
       _timeTaken = _endTimer();
-      firestoreSave(false, false, _attemptNum, getStringObject(widget.object), _timeTaken);
+      firestoreSave(false, false, _attemptNum, getStringObject(widget.object), _timeTaken, _participantNum);
       _redirectToQuestions(false);
     }
 
@@ -120,7 +122,7 @@ class _AuthState extends State<Auth> {
   ///Called when user wants to skip this authentication for any reason
   void _skipAuth() {
     var _timeTaken = _endTimer();
-    firestoreSave(false, true, _attemptNum, getStringObject(widget.object), _timeTaken);
+    firestoreSave(false, true, _attemptNum, getStringObject(widget.object), _timeTaken, _participantNum);
     _redirectToQuestions(true);
   }
 
@@ -172,6 +174,11 @@ class _AuthState extends State<Auth> {
           _boxSizes=[0,0];
       }
     });
+    //Retrieve the participant number from the file
+    getParticipantNum().then((pNum) => setState((){
+        _participantNum = pNum;
+      })
+    );
   }
 
   @override
