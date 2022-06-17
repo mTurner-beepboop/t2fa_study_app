@@ -36,6 +36,7 @@ class _AuthState extends State<Auth> {
   var _initialTime = 0; //Time currently starts from the moment the first touch happens, and ends when the authentication button is clicked successfully
 
   List<double> _boxSizes = [];
+  List<Color> _cubeBoxColor = [Colors.transparent, Colors.transparent, Colors.transparent, Colors.transparent];
 
   final num _maxAttempts = 3; //Easy way to change max number of attempts allowed
 
@@ -79,6 +80,8 @@ class _AuthState extends State<Auth> {
         break;
       case Objects.cube:
         authFunc = cubeAuth;
+        //Set all the cube progress squares to transparent again
+        _resetColorBox();
         break;
       default: //In this case no object was chosen hence the authentication cannot be carried out - this shouldn't happen ever
         return;
@@ -144,6 +147,27 @@ class _AuthState extends State<Auth> {
     });
   }
 
+  ///Color the feedback box for the cube object
+  void _colorBox(){
+    for (int i = 0; i < 4; i++){
+      if (_cubeBoxColor[i] == Colors.transparent){
+        setState((){
+          _cubeBoxColor[i] = Colors.green;
+        });
+        return;
+      }
+    }
+    return; //This return shouldn't be called unless extra touches are made to the listener.
+  }
+
+  ///Reset the feedback box for the cube object
+  void _resetColorBox(){
+    setState((){
+      _cubeBoxColor = [Colors.transparent, Colors.transparent, Colors.transparent, Colors.transparent];
+    });
+  }
+
+
   ///Calculate final time and set initial timer back to zero
   num _endTimer() {
     int timeElapsed = DateTime.now().millisecondsSinceEpoch - _initialTime;
@@ -163,8 +187,8 @@ class _AuthState extends State<Auth> {
     setState(() {
       switch (widget.object){
         case (Objects.cube):
-          _boxSizes = [300, 300];
-          _instructions = "Touch the correct 4 sides to the screen then press authenticate";
+          _boxSizes = [200, 200];
+          _instructions = "Touch the correct 4 sides to the screen then press authenticate, after lifting the object, one of the 4 boxes will turn green to help you keep track of your progress";
           break;
         case (Objects.card):
           _boxSizes = [450, 300];
@@ -221,7 +245,62 @@ class _AuthState extends State<Auth> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            //This is where the testing for the button is
+            //Extra feedback for cube auth
+            widget.object == Objects.cube
+            ? Padding(
+                padding: const EdgeInsets.fromLTRB(50, 20, 50, 20),
+                child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(20),
+                    child:Container(
+                      height:20,
+                      width:20,
+                      decoration: BoxDecoration(
+                        color: _cubeBoxColor[0],
+                        border: Border.all(width: 1.0, color: Colors.black),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: Container(
+                      height:20,
+                      width:20,
+                      decoration: BoxDecoration(
+                        color: _cubeBoxColor[1],
+                        border: Border.all(width: 1.0, color: Colors.black),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: Container(
+                      height:20,
+                      width:20,
+                      decoration: BoxDecoration(
+                        color: _cubeBoxColor[2],
+                        border: Border.all(width: 1.0, color: Colors.black),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: Container(
+                      height:20,
+                      width:20,
+                      decoration: BoxDecoration(
+                        color: _cubeBoxColor[3],
+                        border: Border.all(width: 1.0, color: Colors.black),
+                      ),
+                    ),
+                  ),
+                ],
+              )
+            )
+            : const SizedBox(height: 20),
+            //This is where the listener for the object interaction is
             Listener(
               onPointerDown: (event) {
                 ///This should be consistent for each object
@@ -246,6 +325,9 @@ class _AuthState extends State<Auth> {
                 //Check if no active points, if so inset a null value into allPoints
                 if (points.isEmpty) {
                   _addPoint(null);
+                  if (widget.object == Objects.cube){
+                    _colorBox();
+                  }
                 }
 
                 //Build a string to display debugging info

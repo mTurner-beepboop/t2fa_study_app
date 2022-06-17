@@ -12,6 +12,10 @@ bool cubeAuth(List<PointerPair?> points) {
       pointNum += 1;
     }
     else{
+      //Make sure only four sides of the model were touched to the screen with no extra touches
+      if (index > 3){
+        return false;
+      }
       combination[index] -= pointNum;
       index++;
       pointNum = 0;
