@@ -149,13 +149,11 @@ class _HomeState extends State<Home> {
           padding:EdgeInsets.zero,
           children: <Widget>[
             const DrawerHeader(
-              decoration: BoxDecoration(
-                color: Colors.indigo
-              ),
               child: Text("Menu"),
             ),
             ListTile(
               onTap: () {
+                Navigator.pop(context);
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => Questions(skip: false, time: DateTime.now().millisecondsSinceEpoch)),
@@ -166,6 +164,7 @@ class _HomeState extends State<Home> {
             ),
             ListTile(
               onTap: (){
+                Navigator.pop(context);
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => const Tutorial()),
@@ -176,6 +175,7 @@ class _HomeState extends State<Home> {
             ),
             ListTile(
               onTap: (){
+                Navigator.pop(context);
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => const Withdraw()),
@@ -193,8 +193,15 @@ class _HomeState extends State<Home> {
           const SizedBox(
             height: 20,
           ),
-          const Center(
-            child: Text("Thank you for participating in the Tangible 2-Factor Authentication follow-up study, press the button below to perform and authentication!", textAlign: TextAlign.center,),
+          Padding(
+            padding: const EdgeInsets.all(20),
+            child:Container(
+              decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.all(Radius.circular(10)),
+                  border: Border.all(width:2.0)
+              ),
+              child: const Text("Thank you for participating in the Tangible 2-Factor Authentication follow-up study, press the button below to perform and authentication!", textAlign: TextAlign.center),
+            ),
           ),
           const SizedBox(
             height: 20,
@@ -205,17 +212,14 @@ class _HomeState extends State<Home> {
           const SizedBox(
             height: 40,
           ),
-          TextButton(
+          ElevatedButton(
             onPressed: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => Auth(title: "Authentication Page", object: object)),
               );
             },
-            style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all<Color>(Colors.black12),
-            ),
-            child: const Text("Continue"),
+            child: const Text("Perform Authentication"),
           ),
         ],
       )

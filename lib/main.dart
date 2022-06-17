@@ -77,7 +77,7 @@ class _MainAppState extends State<MainApp> {
     return MaterialApp(
       title: 'T2FA Follow-Up App',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.teal,
       ),
       home: Home(firstStart: widget.firstStart),
     );

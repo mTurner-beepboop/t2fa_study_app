@@ -18,7 +18,12 @@ class _TutorialState extends State<Tutorial> {
       appBar: AppBar(
         title: const Text("Help"),
       ),
-      body: const Text("Here will be a link to some demonstration videos or something similar"),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: const [
+          Text("Here will be a link to some demonstration videos or something similar"),
+        ]
+      )
     );
   }
 }

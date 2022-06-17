@@ -245,7 +245,7 @@ class _AuthState extends State<Auth> {
       body: Center(
         ///This is where all the actual UI stuff goes
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
             //Extra feedback for cube auth
             widget.object == Objects.cube
@@ -302,84 +302,98 @@ class _AuthState extends State<Auth> {
               )
             )
             : const SizedBox(height: 20),
-            //This is where the listener for the object interaction is
-            Listener(
-              onPointerDown: (event) {
-                ///This should be consistent for each object
-                //Event contains all the PointerEvent details
-                var x = event.position.dx;
-                var y = event.position.dy;
-                var size = event.radiusMinor;
-                var id = event.pointer; //Unique identifier for the point
-                _addPoint(PointerPair(x, y, size, id));
-                print(points.length); //Debugging
-              },
-              onPointerUp: (event) {
-                ///This will in particular be unique for each object
-                ///So probably needs an if or case statement to check that
+            Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children:[
+                //This is where the listener for the object interaction is
+                Listener(
+                  onPointerDown: (event) {
+                    ///This should be consistent for each object
+                    //Event contains all the PointerEvent details
+                    var x = event.position.dx;
+                    var y = event.position.dy;
+                    var size = event.radiusMinor;
+                    var id = event.pointer; //Unique identifier for the point
+                    _addPoint(PointerPair(x, y, size, id));
+                    print(points.length); //Debugging
+                  },
+                  onPointerUp: (event) {
+                    ///This will in particular be unique for each object
+                    ///So probably needs an if or case statement to check that
 
-                //Get the event pointer id
-                var pointerId = event.pointer;
+                    //Get the event pointer id
+                    var pointerId = event.pointer;
 
-                //Remove point from the list
-                _removePoints(pointerId);
+                    //Remove point from the list
+                    _removePoints(pointerId);
 
-                //Check if no active points, if so inset a null value into allPoints
-                if (points.isEmpty) {
-                  _addPoint(null);
-                  if (widget.object == Objects.cube){
-                    _colorBox();
-                  }
-                }
+                    //Check if no active points, if so inset a null value into allPoints
+                    if (points.isEmpty) {
+                      _addPoint(null);
+                      if (widget.object == Objects.cube){
+                        _colorBox();
+                      }
+                    }
 
-                //Build a string to display debugging info
-                String text = "Active Points at: ";
-                for (PointerPair point in points) {
-                  text += "(${point.x}, ${point.y}) with id: ${point.id} ";
-                }
+                    //Build a string to display debugging info
+                    String text = "Active Points at: ";
+                    for (PointerPair point in points) {
+                      text += "(${point.x}, ${point.y}) with id: ${point.id} ";
+                    }
 
-                text +=
+                    text +=
                     ". Deactivated Point at: (${event.position.dx} ,${event.position.dy}), with ID: $pointerId";
 
-                //Create a snack bar to display the information in
-                //var snackBar = SnackBar(content: Text(text));
-                //ScaffoldMessenger.of(context).showSnackBar(snackBar);
-              },
-              child: Container(
-                ///This is the actual area which collects the touch point information
-                width: _boxSizes[1],
-                height: _boxSizes[0],
-                decoration: BoxDecoration(
-                  color: Colors.transparent,
-                  border: Border.all(width: 2.0, color: Colors.black),
+                    //Create a snack bar to display the information in
+                    //var snackBar = SnackBar(content: Text(text));
+                    //ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                  },
+                  child: Container(
+                    ///This is the actual area which collects the touch point information
+                    width: _boxSizes[1],
+                    height: _boxSizes[0],
+                    decoration: BoxDecoration(
+                      color: Colors.transparent,
+                      border: Border.all(width: 2.0, color: Colors.black),
+                    ),
+                  ),
                 ),
-              ),
+                //Text(_textContent),
+                Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: ElevatedButton(
+                    ///The authentication attempt button
+                    onPressed: () {
+                      _authenticateAttempt();
+                    },
+                    child: const Text("Press to authenticate"),
+                  ),
+                ),
+              ]
             ),
-            //Text(_textContent),
-            TextButton(
-              ///The authentication attempt button
-              onPressed: () {
-                _authenticateAttempt();
-              },
-              style: ButtonStyle(
-                  backgroundColor:
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  style: ButtonStyle(
+                      backgroundColor:
                       MaterialStateProperty.all<Color>(Colors.black12)),
-              child: const Text("Press to authenticate"),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              style: ButtonStyle(
-                  backgroundColor:
+                  child: const Text("Return home"),
+                ),
+                TextButton(
+                  onPressed: () {
+                    _skipAuth();
+                  },
+                  style: ButtonStyle(
+                      backgroundColor:
                       MaterialStateProperty.all<Color>(Colors.black12)),
-              child: const Text("Return home"),
-            ),
-            TextButton(
-                onPressed: () {
-                  _skipAuth();
-                },
-                child: const Text("Press here to skip auth")),
+                  child: const Text("Skip this Authentication")
+                ),
+              ]
+            )
           ],
         ),
       ),
