@@ -27,7 +27,7 @@ class Auth extends StatefulWidget {
 class _AuthState extends State<Auth> {
   List<PointerPair> points =
       []; //Represents a list of currently active touch points
-  List<PointerPair> allPoints =
+  List<PointerPair?> allPoints =
       []; //Represents a list of the pressed points for authentication
 
   String _instructions = "";
@@ -42,8 +42,10 @@ class _AuthState extends State<Auth> {
   num _participantNum = -1;
 
   ///Add a new pointer pair to the list of active pointers
-  void _addPoint(PointerPair p) {
-    points.add(p);
+  void _addPoint(PointerPair? p) {
+    if (p != null){
+      points.add(p);
+    }
     allPoints.add(p);
   }
 
@@ -67,7 +69,7 @@ class _AuthState extends State<Auth> {
   void _authenticateAttempt() {
     //In theory, check authentication success
     //Retrieve the correct function for the current object
-    bool Function(List<PointerPair>) authFunc;
+    bool Function(List<PointerPair?>) authFunc;
     switch (widget.object) {
       case Objects.card:
         authFunc = cardAuth;
@@ -108,8 +110,10 @@ class _AuthState extends State<Auth> {
 
     //TODO - Remove this debugging information in production
     String txt = "Last attempt included:";
-    for (PointerPair point in allPoints) {
-      txt += " id: ${point.id} (${point.x}, ${point.y}) ${point.size}";
+    for (PointerPair? point in allPoints) {
+      if (point != null) {
+        txt += " id: ${point.id} (${point.x}, ${point.y}) ${point.size}";
+      }
     }
     _changeText(txt + ". Time taken: $_timeTaken");
 
@@ -227,6 +231,7 @@ class _AuthState extends State<Auth> {
                 var size = event.radiusMinor;
                 var id = event.pointer; //Unique identifier for the point
                 _addPoint(PointerPair(x, y, size, id));
+                print(points.length);
               },
               onPointerUp: (event) {
                 ///This will in particular be unique for each object
@@ -238,6 +243,11 @@ class _AuthState extends State<Auth> {
                 //Remove point from the list
                 _removePoints(pointerId);
 
+                //Check if no active points, if so inset a null value into allPoints
+                if (points.isEmpty) {
+                  _addPoint(null);
+                }
+
                 //Build a string to display debugging info
                 String text = "Active Points at: ";
                 for (PointerPair point in points) {
@@ -248,8 +258,8 @@ class _AuthState extends State<Auth> {
                     ". Deactivated Point at: (${event.position.dx} ,${event.position.dy}), with ID: $pointerId";
 
                 //Create a snack bar to display the information in
-                var snackBar = SnackBar(content: Text(text));
-                ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                //var snackBar = SnackBar(content: Text(text));
+                //ScaffoldMessenger.of(context).showSnackBar(snackBar);
               },
               child: Container(
                 ///This is the actual area which collects the touch point information
@@ -261,7 +271,7 @@ class _AuthState extends State<Auth> {
                 ),
               ),
             ),
-            Text(_textContent),
+            //Text(_textContent),
             TextButton(
               ///The authentication attempt button
               onPressed: () {
