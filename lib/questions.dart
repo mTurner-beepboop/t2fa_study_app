@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'home.dart';
 import 'utility/firestore_save.dart';
+import 'utility/local.dart';
 
 //TODO - Save answers to firestore
 
@@ -49,7 +50,7 @@ class _QuestionsFormState extends State<QuestionsForm> {
   String? error;
 
   void _handleSubmit(ans){
-    firestoreQuestionsSave(ans, widget.time, widget.skip);
+    getParticipantNum().then((value) => firestoreQuestionsSave(ans, widget.time, widget.skip, value));
   }
 
   @override

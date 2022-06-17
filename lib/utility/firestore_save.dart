@@ -35,13 +35,14 @@ void firestoreWithdrawSave(num id) {
 
 ///Utility function ro save answers given to questionnaire in correct from to
 ///firestore in 'questionnaire' collection
-void firestoreQuestionsSave(List<dynamic> ans, num authTime, bool skip) {
+void firestoreQuestionsSave(List<dynamic> ans, num authTime, bool skip, num id) {
   CollectionReference questionnaire =
       FirebaseFirestore.instance.collection('questionnaire');
   questionnaire
       .add({
         "answers": ans,
         "time_of_auth": authTime,
+        "id": id,
         "skip": skip,
       })
       .then((value) => print("Answers added")) //Debug

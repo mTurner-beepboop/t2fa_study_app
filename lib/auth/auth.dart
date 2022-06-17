@@ -183,15 +183,15 @@ class _AuthState extends State<Auth> {
     super.initState();
     _startTimer();
     //Set the size of the boxes for listening depending on which object the user has
-    //TODO - Set these sizes to the correct ones, make sure consistent across devices.
+    //TODO - Make sure sizes are consistent across devices.
     setState(() {
       switch (widget.object){
         case (Objects.cube):
-          _boxSizes = [200, 200];
+          _boxSizes = [200,200];
           _instructions = "Touch the correct 4 sides to the screen then press authenticate, after lifting the object, one of the 4 boxes will turn green to help you keep track of your progress";
           break;
         case (Objects.card):
-          _boxSizes = [450, 300];
+          _boxSizes = [550, 375];
           _instructions = "Perform the sliding action over the dots while the object is on the screen, touch the square portion, then press authenticate";
           break;
         case (Objects.pendant):
@@ -310,7 +310,7 @@ class _AuthState extends State<Auth> {
                 var size = event.radiusMinor;
                 var id = event.pointer; //Unique identifier for the point
                 _addPoint(PointerPair(x, y, size, id));
-                print(points.length);
+                print(points.length); //Debugging
               },
               onPointerUp: (event) {
                 ///This will in particular be unique for each object

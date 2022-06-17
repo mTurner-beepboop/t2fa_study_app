@@ -4,6 +4,8 @@ import 'dart:async';
 import 'package:path_provider/path_provider.dart';
 import 'firestore_save.dart';
 
+///Methods relating to files in the local storage
+
 ///Related enum for objects
 enum Objects {pendant, cube, card}
 
