@@ -158,7 +158,7 @@ class _HomeState extends State<Home> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const Questions(skip: false)),
+                  MaterialPageRoute(builder: (context) => Questions(skip: false, time: DateTime.now().millisecondsSinceEpoch)),
                 );
               },
               leading: const Icon(Icons.question_answer),

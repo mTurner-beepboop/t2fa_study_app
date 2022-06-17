@@ -56,7 +56,7 @@ class _AuthState extends State<Auth> {
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder: (BuildContext context) => Questions(skip: skip),
+        builder: (BuildContext context) => Questions(skip: skip, time: _initialTime),
       ),
     );
   }
@@ -89,14 +89,14 @@ class _AuthState extends State<Auth> {
     bool suc = authFunc(allPoints);
     if (suc) {
       _timeTaken = _endTimer();
-      firestoreAuthSave(true, false, _attemptNum, getStringObject(widget.object), _timeTaken, _participantNum);
+      firestoreAuthSave(true, false, _attemptNum, getStringObject(widget.object), _timeTaken, _participantNum, _initialTime);
       _redirectToQuestions(false);
     }
 
     //Check authentication attempt number (if 3 then end)
     if (_attemptNum == _maxAttempts) {
       _timeTaken = _endTimer();
-      firestoreAuthSave(false, false, _attemptNum, getStringObject(widget.object), _timeTaken, _participantNum);
+      firestoreAuthSave(false, false, _attemptNum, getStringObject(widget.object), _timeTaken, _participantNum, _initialTime);
       _redirectToQuestions(false);
     }
 
@@ -122,7 +122,7 @@ class _AuthState extends State<Auth> {
   ///Called when user wants to skip this authentication for any reason
   void _skipAuth() {
     var _timeTaken = _endTimer();
-    firestoreAuthSave(false, true, _attemptNum, getStringObject(widget.object), _timeTaken, _participantNum);
+    firestoreAuthSave(false, true, _attemptNum, getStringObject(widget.object), _timeTaken, _participantNum, _initialTime);
     _redirectToQuestions(true);
   }
 
@@ -142,7 +142,7 @@ class _AuthState extends State<Auth> {
 
   ///Calculate final time and set initial timer back to zero
   num _endTimer() {
-    num timeElapsed = DateTime.now().millisecondsSinceEpoch - _initialTime;
+    int timeElapsed = DateTime.now().millisecondsSinceEpoch - _initialTime;
     setState(() {
       _attemptNum = 1;
     });

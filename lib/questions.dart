@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'home.dart';
+import 'utility/firestore_save.dart';
 
 //TODO - Save answers to firestore
 
@@ -8,9 +9,10 @@ import 'home.dart';
 ///authentication attempt. Currently contains question templates for both free text input
 ///and multiple choice questions
 class Questions extends StatefulWidget {
-  const Questions({Key? key, required this.skip}) : super(key: key);
+  const Questions({Key? key, required this.skip, required this.time}) : super(key: key);
 
-  final bool skip;
+  final num time; //Stores the time the authentication took place (so it can be linked to the authentication attempt)
+  final bool skip; //Stores whether the authentication was skipped
 
   @override
   State<Questions> createState() => _QuestionsState();
@@ -23,15 +25,18 @@ class _QuestionsState extends State<Questions> {
       appBar: AppBar(
         title: const Text("Questionnaire"),
       ),
-      body: const Center(
-        child: QuestionsForm(),
+      body: Center(
+        child: QuestionsForm(time: widget.time, skip: widget.skip),
       ),
     );
   }
 }
 
 class QuestionsForm extends StatefulWidget {
-  const QuestionsForm({Key? key}) : super(key: key);
+  const QuestionsForm({Key? key, required this.time, required this.skip}) : super(key: key);
+
+  final num time;
+  final bool skip;
 
   @override
   State<QuestionsForm> createState() => _QuestionsFormState();
@@ -44,8 +49,7 @@ class _QuestionsFormState extends State<QuestionsForm> {
   String? error;
 
   void _handleSubmit(ans){
-    print(ans[0]);
-    print(ans[1]);
+    firestoreQuestionsSave(ans, widget.time, widget.skip);
   }
 
   @override
