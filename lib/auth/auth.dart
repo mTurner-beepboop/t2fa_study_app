@@ -108,7 +108,9 @@ class _AuthState extends State<Auth> {
     //Alter required variables after attempt
     //First iterate attemptNum if last attempt failed and not final allowed attempt
     if (!suc && _attemptNum != _maxAttempts) {
-      _attemptNum += 1;
+      setState((){
+        _attemptNum += 1;
+      });
     }
 
     //TODO - Remove this debugging information in production

@@ -28,6 +28,7 @@ void firestoreWithdrawSave(num id) {
   withdraw
       .add({
         "id": id,
+        "time": DateTime.now().millisecondsSinceEpoch,
       })
       .then((value) => print("Status added")) //Debug
       .catchError((error) => print("Failed to add: $error")); //Debug
