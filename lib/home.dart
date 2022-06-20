@@ -95,6 +95,7 @@ class _HomeState extends State<Home> {
           content: Stack(
             children: <Widget>[
               const Text("Please input your participant number"),
+              const SizedBox(height:20),
               Form(
                 key: _formKey,
                 child: Column(
@@ -227,6 +228,7 @@ class _HomeState extends State<Home> {
                   content: const Text("Do you have your object ready for authentication?"),
                   actions: [
                     ElevatedButton(onPressed: () {
+                      Navigator.pop(context, "Yes");
                       Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => Auth(title: "Authentication Page", object: object)),

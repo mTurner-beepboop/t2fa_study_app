@@ -94,6 +94,11 @@ class _AuthState extends State<Auth> {
     bool suc = authFunc(allPoints);
     if (suc) {
       _timeTaken = _endTimer();
+
+      //Tell the user it was successful
+      var snackBar = SnackBar(content: Text("Success in $_attemptNum attempt(s)!"));
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
       firestoreAuthSave(true, false, _attemptNum, getStringObject(widget.object), _timeTaken, _participantNum, _initialTime);
       _redirectToQuestions(false);
     }
@@ -101,6 +106,10 @@ class _AuthState extends State<Auth> {
     //Check authentication attempt number (if 3 then end)
     if (_attemptNum == _maxAttempts) {
       _timeTaken = _endTimer();
+
+      var snackBar = const SnackBar(content: Text("This attempt was a failure"));
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
       firestoreAuthSave(false, false, _attemptNum, getStringObject(widget.object), _timeTaken, _participantNum, _initialTime);
       _redirectToQuestions(false);
     }
@@ -132,6 +141,10 @@ class _AuthState extends State<Auth> {
   ///Called when user wants to skip this authentication for any reason
   void _skipAuth() {
     var _timeTaken = _endTimer();
+
+    var snackBar = const SnackBar(content: Text("This attempt was skipped."));
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
     firestoreAuthSave(false, true, _attemptNum, getStringObject(widget.object), _timeTaken, _participantNum, _initialTime);
     _redirectToQuestions(true);
   }
@@ -173,12 +186,9 @@ class _AuthState extends State<Auth> {
   }
 
 
-  ///Calculate final time and set initial timer back to zero
+  ///Calculate final time
   num _endTimer() {
     int timeElapsed = DateTime.now().millisecondsSinceEpoch - _initialTime;
-    setState(() {
-      _attemptNum = 1;
-    });
     return timeElapsed;
   }
 
