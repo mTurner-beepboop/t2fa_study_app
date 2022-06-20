@@ -31,7 +31,7 @@ class _AuthState extends State<Auth> {
       []; //Represents a list of the pressed points for authentication
 
   String _instructions = "";
-  String _textContent = "No attempt yet"; //Mostly for debug currently, refers to the text in the debug box below the touch area
+  //String _textContent = "No attempt yet"; //Debugging
   var _attemptNum = 1; //1 indexed attempt number for readability in data
   var _initialTime = 0; //Time currently starts from the moment the first touch happens, and ends when the authentication button is clicked successfully
 
@@ -113,7 +113,7 @@ class _AuthState extends State<Auth> {
       });
     }
 
-    //TODO - Remove this debugging information in production
+    /* //Debugging information
     String txt = "Last attempt included:";
     for (PointerPair? point in allPoints) {
       if (point != null) {
@@ -121,6 +121,7 @@ class _AuthState extends State<Auth> {
       }
     }
     _changeText(txt + ". Time taken: $_timeTaken");
+    */
 
     //Remove all points from the authentication
     while (allPoints.isNotEmpty) {
@@ -135,12 +136,14 @@ class _AuthState extends State<Auth> {
     _redirectToQuestions(true);
   }
 
+  /*
   ///Controls the text in the debug text box
   void _changeText(msg) {
     setState(() {
       _textContent = msg;
     });
   }
+  */
 
   ///Log current time for tracking authentication attempt time
   void _startTimer() {
@@ -335,6 +338,7 @@ class _AuthState extends State<Auth> {
                       }
                     }
 
+                    /*
                     //Build a string to display debugging info
                     String text = "Active Points at: ";
                     for (PointerPair point in points) {
@@ -345,8 +349,9 @@ class _AuthState extends State<Auth> {
                     ". Deactivated Point at: (${event.position.dx} ,${event.position.dy}), with ID: $pointerId";
 
                     //Create a snack bar to display the information in
-                    //var snackBar = SnackBar(content: Text(text));
-                    //ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                    var snackBar = SnackBar(content: Text(text));
+                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                    */
                   },
                   child: Container(
                     ///This is the actual area which collects the touch point information
