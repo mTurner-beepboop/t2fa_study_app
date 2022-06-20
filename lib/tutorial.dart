@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'utility/local.dart';
 
 //TODO - Implement the instructions/instructional videos
 
@@ -12,6 +13,18 @@ class Tutorial extends StatefulWidget {
 }
 
 class _TutorialState extends State<Tutorial> {
+  String? obj;
+
+  @override
+  void initState() {
+    super.initState();
+    getObject().then((value) {
+      setState((){
+        obj = value;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -20,8 +33,13 @@ class _TutorialState extends State<Tutorial> {
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: const [
-          Text("Here will be a link to some demonstration videos or something similar"),
+        children: [
+          getEnumObject(obj!) == Objects.cube ?
+            const Text("Here will be instructions for the cube") : const SizedBox(height:0),
+          getEnumObject(obj!) == Objects.pendant ?
+            const Text("Here will be instructions for the pendant") : const SizedBox(height:0),
+          getEnumObject(obj!) == Objects.card ?
+            const Text("Here will be instructions for the card") : const SizedBox(height:0),
         ]
       )
     );

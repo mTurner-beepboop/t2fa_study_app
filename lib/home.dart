@@ -148,8 +148,14 @@ class _HomeState extends State<Home> {
         child: ListView(
           padding:EdgeInsets.zero,
           children: <Widget>[
-            const DrawerHeader(
-              child: Text("Menu"),
+            DrawerHeader(
+              decoration: BoxDecoration(
+                color: Theme.of(context).primaryColor,
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: const [Text("Menu"),]
+              ),
             ),
             ListTile(
               onTap: () {
@@ -213,12 +219,30 @@ class _HomeState extends State<Home> {
             height: 40,
           ),
           ElevatedButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => Auth(title: "Authentication Page", object: object)),
-              );
-            },
+            onPressed: () =>
+              showDialog<String>(
+                context:context,
+                builder: (BuildContext context) => AlertDialog(
+                  title: const Text("Authentication"),
+                  content: const Text("Do you have your object ready for authentication?"),
+                  actions: [
+                    ElevatedButton(onPressed: () {
+                      Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => Auth(title: "Authentication Page", object: object)),
+                      );
+                    },
+                    child: const Text("Yes")
+                  ),
+                  TextButton(
+                    child: const Text("No"),
+                    onPressed: () {
+                      Navigator.pop(context, "No");
+                    }
+                  )
+                ]
+              )
+            ),
             child: const Text("Perform Authentication"),
           ),
         ],

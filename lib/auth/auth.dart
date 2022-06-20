@@ -380,7 +380,7 @@ class _AuthState extends State<Auth> {
                   },
                   style: ButtonStyle(
                       backgroundColor:
-                      MaterialStateProperty.all<Color>(Colors.black12)),
+                      MaterialStateProperty.all<Color>(Colors.indigo.shade100)),
                   child: const Text("Return home"),
                 ),
                 TextButton(
@@ -389,7 +389,7 @@ class _AuthState extends State<Auth> {
                   },
                   style: ButtonStyle(
                       backgroundColor:
-                      MaterialStateProperty.all<Color>(Colors.black12)),
+                      MaterialStateProperty.all<Color>(Colors.indigo.shade100)),
                   child: const Text("Skip this Authentication")
                 ),
               ]
