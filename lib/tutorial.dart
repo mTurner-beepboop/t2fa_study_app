@@ -50,7 +50,7 @@ class _TutorialState extends State<Tutorial> {
           setState((){
             _title = "Pendant";
             _text1 = "This model is built to act as a combination lock, a more familiar representation of security. To use, simple rotate the layers until the given combination is aligned in a column, touch the model to the screen and press the button to authenticate.";
-            _text2 = "The combination set for this model is COMBINATION. When touching the model to the screen, ensure that you touch both black points on the top surface of the model (one on the main body, the other being the axis).";
+            _text2 = "The combination set for this model is 6-1-7. When touching the model to the screen, ensure that you touch both black points on the top surface of the model (one on the main body, the other being the axis).";
           });
           break;
         default:

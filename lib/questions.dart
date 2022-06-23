@@ -134,7 +134,7 @@ class _QuestionsFormState extends State<QuestionsForm> {
                       ),
                     ],
                   ),
-                  error != null ? Text(error!, style: const TextStyle(color: Colors.red, fontSize: 12)) : const Text(""),
+                  error != null ? Text(error!, style: const TextStyle(color: Colors.red, fontSize: 12)) : const SizedBox(height:0),
                 ],
               ),
             ),
@@ -155,9 +155,15 @@ class _QuestionsFormState extends State<QuestionsForm> {
                   );
                 }
                 else {
-                  setState((){
-                    error = "Please make a selection";
-                  });
+                  if (answers[1] == null){
+                    setState((){
+                      error = "Please make a selection";
+                    });
+                  } else {
+                    setState((){
+                      error = null;
+                    });
+                  }
                 }
               },
               child: const Text("Submit"),

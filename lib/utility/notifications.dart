@@ -7,8 +7,8 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
 }
 
-///Handler for foreground messages, in this case notifications do not display
-///automatically TODO - Make notifications display
+///Handler for foreground messages - in Android, it is not currently possible
+///for notifications to be displayed in the foreground, so this is a known issue
 Future<void> firebaseMessagingForegroundHandler() async {
   late FirebaseMessaging messaging;
   messaging = FirebaseMessaging.instance;
