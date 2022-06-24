@@ -21,7 +21,9 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  Objects? object;
+  Objects? _object;
+  String? _strObj;
+  bool _active = true;
   String objText = "You have yet to select an object";
 
   @override
@@ -31,6 +33,13 @@ class _HomeState extends State<Home> {
     if (widget.firstStart){
       WidgetsBinding.instance.addPostFrameCallback((_) {_firstStartDialog();});
     }
+    else{ //If not first start, check if user has withdrawn
+      getWithdrawn().then((value) =>
+        setState((){
+          _active = value;
+        })
+      );
+    }
     //Read object from file
     _updateObj();
   }
@@ -38,8 +47,9 @@ class _HomeState extends State<Home> {
   void _updateObj() {
     getObject().then((obj) {
       setState((){
-        object = getEnumObject(obj);
-        objText = "The object you have been assigned is: " + getStringObject(object);
+        _object = getEnumObject(obj);
+        _strObj = obj;
+        objText = "The object you have been assigned is: " + _strObj!;
       });
     });
   }
@@ -174,7 +184,7 @@ class _HomeState extends State<Home> {
                 Navigator.pop(context);
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const Tutorial()),
+                  MaterialPageRoute(builder: (context) => Tutorial(obj: _strObj!)),
                 );
               },
               leading: const Icon(Icons.help_outline),
@@ -222,41 +232,49 @@ class _HomeState extends State<Home> {
                   border: Border.all(width:2.0, color: Colors.indigo),
                   color: Colors.indigoAccent,
               ),
-              child: const Padding(
-                padding: EdgeInsets.all(10),
-                child: Text("Thank you for participating in the Tangible 2-Factor Authentication follow-up study, press the button below to perform an authentication!", textAlign: TextAlign.center, style: TextStyle(color: Colors.white),),
-              )
+              child:
+                _active ?
+                const Padding(
+                  padding: EdgeInsets.all(10),
+                  child: Text("Thank you for participating in the Tangible 2-Factor Authentication follow-up study, press the button below to perform an authentication!", textAlign: TextAlign.center, style: TextStyle(color: Colors.white),),
+                ) :
+                const Padding(
+                  padding: EdgeInsets.all(10),
+                  child: Text("You have withdrawn from the study, if you haven't already, please contact ...", textAlign: TextAlign.center, style: TextStyle(color: Colors.white),), //TODO - Add correct contact information
+                )
             ),
           ),
           const SizedBox(
             height: 60,
           ),
           ElevatedButton(
-            onPressed: () =>
-              showDialog<String>(
-                context:context,
-                builder: (BuildContext context) => AlertDialog(
-                  title: const Text("Authentication"),
-                  content: const Text("Do you have your object ready for authentication?"),
-                  actions: [
-                    ElevatedButton(onPressed: () {
-                      Navigator.pop(context, "Yes");
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => Auth(title: "Authentication Page", object: object)),
-                      );
-                    },
-                        child: const Text("Yes")
-                    ),
-                    TextButton(
-                        child: const Text("No"),
-                        onPressed: () {
-                          Navigator.pop(context, "No");
-                        }
-                    )
-                  ]
-                )
-              ),
+            onPressed: _active ?
+              () =>
+                showDialog<String>(
+                  context:context,
+                  builder: (BuildContext context) => AlertDialog(
+                    title: const Text("Authentication"),
+                    content: const Text("Do you have your object ready for authentication?"),
+                    actions: [
+                      ElevatedButton(onPressed: () {
+                        Navigator.pop(context, "Yes");
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => Auth(title: "Authentication Page", object: _object)),
+                        );
+                      },
+                          child: const Text("Yes")
+                      ),
+                      TextButton(
+                          child: const Text("No"),
+                          onPressed: () {
+                            Navigator.pop(context, "No");
+                          }
+                      )
+                    ]
+                  )
+                ) :
+              null,
             style: ButtonStyle(
               backgroundColor: MaterialStateProperty.all<Color>(Colors.indigoAccent),
               shape: MaterialStateProperty.all<RoundedRectangleBorder>(
