@@ -198,81 +198,87 @@ class _HomeState extends State<Home> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Padding(
-            padding: const EdgeInsets.fromLTRB(20,20,20,10),
-            child:Container(
-              decoration: BoxDecoration(
+              padding: const EdgeInsets.fromLTRB(20,10,20,20),
+              child: Container(
+                decoration: BoxDecoration(
                   borderRadius: const BorderRadius.all(Radius.circular(10)),
-                  border: Border.all(width:2.0)
-              ),
-              child: const Padding(
-                padding: EdgeInsets.all(10),
-                child: Text("Thank you for participating in the Tangible 2-Factor Authentication follow-up study, press the button below to perform an authentication!", textAlign: TextAlign.center),
+                  border: Border.all(width:2.0, color: Colors.indigo),
+                  color: Colors.indigoAccent,
+                ),
+                child: Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: Text(objText, style: const TextStyle(color: Colors.white))
+                ),
               )
-            ),
           ),
           const SizedBox(
             height: 20,
           ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(20,10,20,20),
-            child: Container(
+            padding: const EdgeInsets.fromLTRB(20,20,20,10),
+            child:Container(
               decoration: BoxDecoration(
-                borderRadius: const BorderRadius.all(Radius.circular(10)),
-                border: Border.all(width:2.0)
+                  borderRadius: const BorderRadius.all(Radius.circular(10)),
+                  border: Border.all(width:2.0, color: Colors.indigo),
+                  color: Colors.indigoAccent,
               ),
-              child: Padding(
-                padding: const EdgeInsets.all(10),
-                child: Text(objText)
-              ),
-            )
+              child: const Padding(
+                padding: EdgeInsets.all(10),
+                child: Text("Thank you for participating in the Tangible 2-Factor Authentication follow-up study, press the button below to perform an authentication!", textAlign: TextAlign.center, style: TextStyle(color: Colors.white),),
+              )
+            ),
           ),
           const SizedBox(
-            height: 40,
+            height: 60,
           ),
-          Container(
-            decoration: const BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(10)),
-            ),
-            child: ElevatedButton(
-              onPressed: () =>
-                showDialog<String>(
-                  context:context,
-                  builder: (BuildContext context) => AlertDialog(
-                    title: const Text("Authentication"),
-                    content: const Text("Do you have your object ready for authentication?"),
-                    actions: [
-                      ElevatedButton(onPressed: () {
-                        Navigator.pop(context, "Yes");
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => Auth(title: "Authentication Page", object: object)),
-                        );
-                      },
-                          child: const Text("Yes")
-                      ),
-                      TextButton(
-                          child: const Text("No"),
-                          onPressed: () {
-                            Navigator.pop(context, "No");
-                          }
-                      )
-                    ]
-                  )
-                ),
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(5,10,5,10),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
-                    Icon(
-                      Icons.lock_open,
-                      size: 130,
+          ElevatedButton(
+            onPressed: () =>
+              showDialog<String>(
+                context:context,
+                builder: (BuildContext context) => AlertDialog(
+                  title: const Text("Authentication"),
+                  content: const Text("Do you have your object ready for authentication?"),
+                  actions: [
+                    ElevatedButton(onPressed: () {
+                      Navigator.pop(context, "Yes");
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => Auth(title: "Authentication Page", object: object)),
+                      );
+                    },
+                        child: const Text("Yes")
                     ),
-                    Text("Perform Authentication"),
+                    TextButton(
+                        child: const Text("No"),
+                        onPressed: () {
+                          Navigator.pop(context, "No");
+                        }
+                    )
                   ]
+                )
+              ),
+            style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all<Color>(Colors.indigoAccent),
+              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  side: const BorderSide(color: Colors.indigo, width:2.0)
                 )
               )
             ),
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(5,10,5,10),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: const [
+                  Icon(
+                    Icons.lock_open,
+                    size: 130,
+                  ),
+                  Text("Perform Authentication"),
+                ]
+              )
+            )
           )
         ],
       )

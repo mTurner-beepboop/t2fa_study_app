@@ -23,6 +23,7 @@ class _QuestionsState extends State<Questions> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Questionnaire"),
+        automaticallyImplyLeading: false,
       ),
       body: Center(
         child: QuestionsForm(time: widget.time, skip: widget.skip),
@@ -140,6 +141,15 @@ class _QuestionsFormState extends State<QuestionsForm> {
             ),
             ///Submit Button
             ElevatedButton(
+              style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all<Color>(Colors.indigoAccent),
+                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          side: const BorderSide(color: Colors.indigo, width:2.0)
+                      )
+                  )
+              ),
               onPressed: () {
                 if (_formKey.currentState!.validate() && answers[1] != null){
                   _formKey.currentState!.save();

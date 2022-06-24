@@ -234,23 +234,23 @@ class _AuthState extends State<Auth> {
           IconButton(
             icon: const Icon(Icons.help_outline),
             onPressed: () => showDialog(
-                context: context,
-                builder: (context) {
-                  return AlertDialog(
-                    title: Text("Help: ${getStringObject(widget.object)}"),
-                    content: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(_instructions),
-                        const SizedBox(height: 15),
-                        TextButton(
-                            onPressed: () {Navigator.pop(context);},
-                            child: const Text("Close")
-                        ),
-                      ]
-                    )
-                  );
-                }
+              context: context,
+              builder: (context) {
+                return AlertDialog(
+                  title: Text("Help: ${getStringObject(widget.object)}"),
+                  content: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(_instructions),
+                      const SizedBox(height: 15),
+                      TextButton(
+                          onPressed: () {Navigator.pop(context);},
+                          child: const Text("Close")
+                      ),
+                    ]
+                  )
+                );
+              }
             ),
           )
         ]
@@ -377,6 +377,15 @@ class _AuthState extends State<Auth> {
                 Padding(
                   padding: const EdgeInsets.all(20),
                   child: ElevatedButton(
+                    style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all<Color>(Colors.indigoAccent),
+                        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                            RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                                side: const BorderSide(color: Colors.indigo, width:2.0)
+                            )
+                        )
+                    ),
                     ///The authentication attempt button
                     onPressed: () {
                       _authenticateAttempt();
@@ -394,8 +403,13 @@ class _AuthState extends State<Auth> {
                     Navigator.pop(context);
                   },
                   style: ButtonStyle(
-                      backgroundColor:
-                      MaterialStateProperty.all<Color>(Colors.indigo.shade100)),
+                    backgroundColor: MaterialStateProperty.all<Color>(Colors.indigo.shade100),
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      )
+                    )
+                  ),
                   child: const Text("Return home"),
                 ),
                 TextButton(
@@ -403,8 +417,14 @@ class _AuthState extends State<Auth> {
                     _skipAuth();
                   },
                   style: ButtonStyle(
-                      backgroundColor:
-                      MaterialStateProperty.all<Color>(Colors.indigo.shade100)),
+                    backgroundColor:
+                    MaterialStateProperty.all<Color>(Colors.indigo.shade100),
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      )
+                    )
+                  ),
                   child: const Text("Skip this Authentication")
                 ),
               ]
