@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.siriusresearchlab.turner.t2fa_usability_app">
    <application
-        android:label="t2fa_usability_app"
+        android:label="T2fa Usability App"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

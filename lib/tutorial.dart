@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'utility/local.dart';
 import 'package:video_player/video_player.dart';
 
-//TODO - Implement the instructions/instructional videos
-
 ///Tutorial page - This is where the user can find instructions on how to work
 ///the model they have been assigned
 class Tutorial extends StatefulWidget {
@@ -27,13 +25,16 @@ class _TutorialState extends State<Tutorial> {
   void initState() {
     super.initState();
 
-    //TODO - Once we have them, add the files to the project, then add correct file to controller and do the required things
+    //TODO - Add video files to assets folder and to the pubspec.yaml file, add paths in each case
     switch(getEnumObject(widget.obj)){
       case Objects.cube:
         setState((){
           _title = "Cube";
           _text1 = "This model is built to replicate a die, leaning in to the idea of authentication objects being multi-use. To authenticate, touch the correct four sides to the screen in the correct order, the press the button to authenticate.";
           _text2 = "The combination set for this objects requires the sequence: 4 -> 1 -> 4 -> 2. When touching the screen with the object, ensure that the face of the object is completely within the outlined box and that you are touching any of the black dots on any of the sides.";
+          _controller = VideoPlayerController.asset("assets/videos/SampleVideo_1280x720_1mb.mp4");
+          _initialiseVideoPlayerFuture = _controller.initialize();
+          _controller.setLooping(true);
         });
         break;
       case Objects.card:
@@ -41,6 +42,9 @@ class _TutorialState extends State<Tutorial> {
           _title = "Card";
           _text1 = "This model is built to the standard size of a credit card, allowing it to be convenient to carry in a wallet or purse. To authenticate you must enact a 'turning' motion over the ring of dots, like you would a safe lock, then touch the black square and finally the on-screen button.";
           _text2 = "To perform the 'turning' motion, starting from any of the dots, slide your finger over 4 dots in a clockwise direction, then 6 dots in a counter-clockwise direction. Ensure the the model is placed within the bounds of the box on the authentication screen and that the model does not slide out of place.";
+          _controller = VideoPlayerController.asset("assets/videos/SampleVideo_1280x720_1mb.mp4");
+          _initialiseVideoPlayerFuture = _controller.initialize();
+          _controller.setLooping(true);
         });
         break;
       case Objects.pendant:
@@ -48,19 +52,30 @@ class _TutorialState extends State<Tutorial> {
           _title = "Pendant";
           _text1 = "This model is built to act as a combination lock, a more familiar representation of security. To use, simple rotate the layers until the given combination is aligned in a column, touch the model to the screen and press the button to authenticate.";
           _text2 = "The combination set for this model is 6-1-7. When touching the model to the screen, ensure that you touch both black points on the top surface of the model (one on the main body, the other being the axis).";
+          _controller = VideoPlayerController.asset("assets/videos/SampleVideo_1280x720_1mb.mp4");
+          _initialiseVideoPlayerFuture = _controller.initialize();
+          _controller.setLooping(true);
         });
         break;
       default:
         setState((){
           _title = "Error";
-          _text1 = "Error";
-          _text2 = "Error";
+          _text1 = "This should not be allowed";
+          _text2 = "Here's a sample video of a rabbit";
+          _controller = VideoPlayerController.asset("assets/videos/SampleVideo_1280x720_1mb.mp4");
+          _initialiseVideoPlayerFuture = _controller.initialize();
+          _controller.setLooping(true);
         });
         break;
     }
   }
 
-  //TODO - Override dispose to ensure video player closed
+  @override
+  void dispose(){
+    _controller.dispose();
+
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -80,8 +95,10 @@ class _TutorialState extends State<Tutorial> {
                 Text("\n$_text2"),
               ]
             )
-          )
-          /* //TODO - Uncomment this when video stuff set up
+          ),
+          const SizedBox(
+            height: 40,
+          ),
           FutureBuilder(
             future: _initialiseVideoPlayerFuture,
             builder: (context, snapshot) {
@@ -101,27 +118,27 @@ class _TutorialState extends State<Tutorial> {
                 );
               }
             },
-            floatingActionButton: FloatingActionButton(
-              onPressed: () {
-                // Wrap the play or pause in a call to `setState`. This ensures the
-                // correct icon is shown.
-                setState(() {
-                  // If the video is playing, pause it.
-                  if (_controller.value.isPlaying) {
-                    _controller.pause();
-                  } else {
-                    // If the video is paused, play it.
-                    _controller.play();
-                  }
-                });
-              },
-              // Display the correct icon depending on the state of the player.
-              child: Icon(
-                _controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
-              ),
           )
-           */
         ]
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          // Wrap the play or pause in a call to `setState`. This ensures the
+          // correct icon is shown.
+          setState(() {
+            // If the video is playing, pause it.
+            if (_controller.value.isPlaying) {
+              _controller.pause();
+            } else {
+              // If the video is paused, play it.
+              _controller.play();
+            }
+          });
+        },
+        // Display the correct icon depending on the state of the player.
+        child: Icon(
+        _controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
+        ),
       )
     );
   }
