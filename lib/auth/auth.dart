@@ -35,12 +35,12 @@ class _AuthState extends State<Auth> {
   var _attemptNum = 1; //1 indexed attempt number for readability in data
   var _initialTime = 0; //Time currently starts from the moment the first touch happens, and ends when the authentication button is clicked successfully
 
-  List<double> _boxSizes = [];
-  List<Color> _cubeBoxColor = [Colors.transparent, Colors.transparent, Colors.transparent, Colors.transparent];
+  List<double> _boxSizes = []; //Represents the physical size of the listener box, set in init()
+  List<Color> _cubeBoxColor = [Colors.transparent, Colors.transparent, Colors.transparent, Colors.transparent]; //Used for colouring the 'step-check' boxes for the cube authentication
 
   final num _maxAttempts = 3; //Easy way to change max number of attempts allowed
 
-  num _participantNum = -1;
+  num _participantNum = -1; //Initially negative for error, set in init()
 
   ///Add a new pointer pair to the list of active pointers
   void _addPoint(PointerPair? p) {
@@ -55,6 +55,7 @@ class _AuthState extends State<Auth> {
     points.removeWhere((item) => item.id == pointerId);
   }
 
+  ///Moves the app to the questionnaire page, taking skip as an argument
   void _redirectToQuestions(skip) {
     Navigator.pushReplacement(
       context,
@@ -197,8 +198,7 @@ class _AuthState extends State<Auth> {
   void initState() {
     super.initState();
     _startTimer();
-    //Set the size of the boxes for listening depending on which object the user has
-    //TODO - On smaller res screens, the widgets are bigger. Make it easier for card to work well!
+    //Set the size of the boxes for listening depending on which object the user has, as well as the instructions to be displayed in the help pop-up
     setState(() {
       switch (widget.object){
         case (Objects.cube):
@@ -231,6 +231,7 @@ class _AuthState extends State<Auth> {
         title: Text(widget.title),
         automaticallyImplyLeading: false,
         actions: [
+          //Help button on app bar
           IconButton(
             icon: const Icon(Icons.help_outline),
             onPressed: () => showDialog(
@@ -255,13 +256,13 @@ class _AuthState extends State<Auth> {
           )
         ]
       ),
-      body: SingleChildScrollView(
+      body: SingleChildScrollView( //Ensures no overflow error
         child: Center(
           ///This is where all the actual UI stuff goes
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
-              //Extra feedback for cube auth
+              //Extra feedback for cube auth (the 'step check' boxes)
               widget.object == Objects.cube
               ? Padding(
                   padding: const EdgeInsets.fromLTRB(50, 20, 50, 20),
@@ -381,6 +382,7 @@ class _AuthState extends State<Auth> {
                 ]
               ),
               Row(
+                //This widget holds the auth and skip buttons (assuming it's not card object)
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   /* //This is a debugging button
@@ -440,6 +442,7 @@ class _AuthState extends State<Auth> {
           ),
         ),
       ),
+      //This is where the skip and auth buttons are in the case of the card object, as on smaller screens there was no room for the buttons
       floatingActionButton: widget.object == Objects.card ? Wrap(
         direction: Axis.horizontal,
         children: [

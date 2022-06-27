@@ -20,10 +20,10 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  Objects? _object;
-  String? _strObj;
-  bool _active = true;
-  String objText = "You have yet to select an object";
+  Objects? _object; //The object the user has
+  String? _strObj; //The string representation of the object the user has
+  bool _active = true; //Whether the user is still participating
+  String objText = "You have yet to select an object"; //String var for textbox
 
   @override
   void initState(){
@@ -43,6 +43,8 @@ class _HomeState extends State<Home> {
     _updateObj();
   }
 
+  ///Retrieves the object initially saved to the local file and updates the
+  ///state variable to reflect this, as well as other related vars
   void _updateObj() {
     getObject().then((obj) {
       setState((){
@@ -155,6 +157,7 @@ class _HomeState extends State<Home> {
         title: Text(widget.title),
       ),
       drawer: Drawer(
+        //Contains the menu bar content
         child: ListView(
           padding:EdgeInsets.zero,
           children: <Widget>[
@@ -205,13 +208,14 @@ class _HomeState extends State<Home> {
           ]
         )
       ),
-      body: SingleChildScrollView(
+      body: SingleChildScrollView( //Ensures no overflow error
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const SizedBox(
               height: 40,
             ),
+            //Text box 1
             Padding(
                 padding: const EdgeInsets.fromLTRB(20,10,20,20),
                 child: Container(
@@ -229,6 +233,7 @@ class _HomeState extends State<Home> {
             const SizedBox(
               height: 20,
             ),
+            //Text box 2
             Padding(
               padding: const EdgeInsets.fromLTRB(20,20,20,10),
               child:Container(
@@ -252,6 +257,7 @@ class _HomeState extends State<Home> {
             const SizedBox(
               height: 60,
             ),
+            //Button to direct to auth page
             ElevatedButton(
               onPressed: _active ?
                 () =>

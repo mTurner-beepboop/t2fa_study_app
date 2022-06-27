@@ -14,18 +14,20 @@ class Tutorial extends StatefulWidget {
 }
 
 class _TutorialState extends State<Tutorial> {
+  //Video player variables
   late VideoPlayerController _controller;
   late Future<void> _initialiseVideoPlayerFuture;
 
-  late String _title;
-  late String _text1;
-  late String _text2;
+  late String _title; //Title of the page - name of the object
+  late String _text1; //First text box
+  late String _text2; //Second text box
 
   @override
   void initState() {
     super.initState();
 
     //TODO - Add video files to assets folder and to the pubspec.yaml file, add paths in each case
+    //Initialise the variables depending on which object the user has
     switch(getEnumObject(widget.obj)){
       case Objects.cube:
         setState((){
@@ -72,6 +74,7 @@ class _TutorialState extends State<Tutorial> {
 
   @override
   void dispose(){
+    //Frees up the video controller space
     _controller.dispose();
 
     super.dispose();
@@ -86,6 +89,7 @@ class _TutorialState extends State<Tutorial> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
+          //Text content
           Text(_title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 40), textAlign: TextAlign.center),
           Padding(
             padding: const EdgeInsets.all(7.5),
@@ -99,6 +103,7 @@ class _TutorialState extends State<Tutorial> {
           const SizedBox(
             height: 40,
           ),
+          //Video content
           FutureBuilder(
             future: _initialiseVideoPlayerFuture,
             builder: (context, snapshot) {
@@ -121,6 +126,7 @@ class _TutorialState extends State<Tutorial> {
           )
         ]
       ),
+      //Button to control the video playback
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           // Wrap the play or pause in a call to `setState`. This ensures the

@@ -21,12 +21,13 @@ class Withdraw extends StatefulWidget {
 }
 
 class _WithdrawState extends State<Withdraw> {
-  bool isActive = true;
+  bool isActive = true; //Whether or not the user is still a participant
   var text = "Press the button below to withdraw from the study. Further instructions will be provided upon withdrawal. \n\n Be Aware: This cannot be undone, and may result in being unable to provide compensation.";
 
   @override
   void initState() {
     super.initState();
+    //Check if the user has already withdrawn
     getWithdrawn().then((value) {
       setState((){
         isActive = value;
@@ -54,6 +55,7 @@ class _WithdrawState extends State<Withdraw> {
             const SizedBox(
               height: 30,
             ),
+            //Withdraw button if active, information text box if not
             isActive
             ? ElevatedButton(
               onPressed: () => showDialog<String>(

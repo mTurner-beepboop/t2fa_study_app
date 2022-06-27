@@ -44,9 +44,9 @@ class QuestionsForm extends StatefulWidget {
 
 class _QuestionsFormState extends State<QuestionsForm> {
   final _formKey = GlobalKey<FormState>();
-  List<dynamic> answers = ["", null];
-  var _iToggle1 = [false, false, false, false, false];
-  String? error;
+  List<dynamic> answers = ["", null]; //The final state of all the answers
+  var _iToggle1 = [false, false, false, false, false]; //The state of the MCQ answer, used to decide which item is highlighted
+  String? error; //A string object used to display the error text if an answer is empty
 
   void _handleSubmit(ans){
     getParticipantNum().then((value) => firestoreQuestionsSave(ans, widget.time, widget.skip, value));
