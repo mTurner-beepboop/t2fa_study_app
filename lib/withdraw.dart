@@ -82,7 +82,7 @@ class _WithdrawState extends State<Withdraw> {
                   ])),
               child: const Text("Withdraw"),
             )
-            : const Text("You have withdrawn and will no longer receive notifications"),
+            : const Text("You have withdrawn and will no longer receive notifications", textAlign: TextAlign.center,),
           ]
         )
       ),

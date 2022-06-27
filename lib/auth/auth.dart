@@ -198,7 +198,7 @@ class _AuthState extends State<Auth> {
     super.initState();
     _startTimer();
     //Set the size of the boxes for listening depending on which object the user has
-    //TODO - Make sure sizes are consistent across devices.
+    //TODO - On smaller res screens, the widgets are bigger. Make it easier for card to work well!
     setState(() {
       switch (widget.object){
         case (Objects.cube):
@@ -255,128 +255,170 @@ class _AuthState extends State<Auth> {
           )
         ]
       ),
-      body: Center(
-        ///This is where all the actual UI stuff goes
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: <Widget>[
-            //Extra feedback for cube auth
-            widget.object == Objects.cube
-            ? Padding(
-                padding: const EdgeInsets.fromLTRB(50, 20, 50, 20),
-                child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(20),
-                    child:Container(
-                      height:20,
-                      width:20,
-                      decoration: BoxDecoration(
-                        color: _cubeBoxColor[0],
-                        border: Border.all(width: 1.0, color: Colors.black),
+      body: SingleChildScrollView(
+        child: Center(
+          ///This is where all the actual UI stuff goes
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              //Extra feedback for cube auth
+              widget.object == Objects.cube
+              ? Padding(
+                  padding: const EdgeInsets.fromLTRB(50, 20, 50, 20),
+                  child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(20),
+                      child:Container(
+                        height:20,
+                        width:20,
+                        decoration: BoxDecoration(
+                          color: _cubeBoxColor[0],
+                          border: Border.all(width: 1.0, color: Colors.black),
+                        ),
                       ),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(20),
-                    child: Container(
-                      height:20,
-                      width:20,
-                      decoration: BoxDecoration(
-                        color: _cubeBoxColor[1],
-                        border: Border.all(width: 1.0, color: Colors.black),
+                    Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: Container(
+                        height:20,
+                        width:20,
+                        decoration: BoxDecoration(
+                          color: _cubeBoxColor[1],
+                          border: Border.all(width: 1.0, color: Colors.black),
+                        ),
                       ),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(20),
-                    child: Container(
-                      height:20,
-                      width:20,
-                      decoration: BoxDecoration(
-                        color: _cubeBoxColor[2],
-                        border: Border.all(width: 1.0, color: Colors.black),
+                    Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: Container(
+                        height:20,
+                        width:20,
+                        decoration: BoxDecoration(
+                          color: _cubeBoxColor[2],
+                          border: Border.all(width: 1.0, color: Colors.black),
+                        ),
                       ),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(20),
-                    child: Container(
-                      height:20,
-                      width:20,
-                      decoration: BoxDecoration(
-                        color: _cubeBoxColor[3],
-                        border: Border.all(width: 1.0, color: Colors.black),
+                    Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: Container(
+                        height:20,
+                        width:20,
+                        decoration: BoxDecoration(
+                          color: _cubeBoxColor[3],
+                          border: Border.all(width: 1.0, color: Colors.black),
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                )
               )
-            )
-            : const SizedBox(height: 20),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children:[
-                //This is where the listener for the object interaction is
-                Listener(
-                  onPointerDown: (event) {
-                    ///This should be consistent for each object
-                    //Event contains all the PointerEvent details
-                    var x = event.position.dx;
-                    var y = event.position.dy;
-                    var size = event.radiusMinor;
-                    var id = event.pointer; //Unique identifier for the point
-                    _addPoint(PointerPair(x, y, size, id));
-                    print(points.length); //Debugging
-                  },
-                  onPointerUp: (event) {
-                    ///This will in particular be unique for each object
-                    ///So probably needs an if or case statement to check that
+              : SizedBox(height: widget.object == Objects.card ? 0 : 20),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children:[
+                  //This is where the listener for the object interaction is
+                  Listener(
+                    onPointerDown: (event) {
+                      ///This should be consistent for each object
+                      //Event contains all the PointerEvent details
+                      var x = event.position.dx;
+                      var y = event.position.dy;
+                      var size = event.radiusMinor;
+                      var id = event.pointer; //Unique identifier for the point
+                      _addPoint(PointerPair(x, y, size, id));
+                      print(points.length); //Debugging
+                    },
+                    onPointerUp: (event) {
+                      ///This will in particular be unique for each object
+                      ///So probably needs an if or case statement to check that
 
-                    //Get the event pointer id
-                    var pointerId = event.pointer;
+                      //Get the event pointer id
+                      var pointerId = event.pointer;
 
-                    //Remove point from the list
-                    _removePoints(pointerId);
+                      //Remove point from the list
+                      _removePoints(pointerId);
 
-                    //Check if no active points, if so inset a null value into allPoints
-                    if (points.isEmpty) {
-                      _addPoint(null);
-                      if (widget.object == Objects.cube){
-                        _colorBox();
+                      //Check if no active points, if so inset a null value into allPoints
+                      if (points.isEmpty) {
+                        _addPoint(null);
+                        if (widget.object == Objects.cube){
+                          _colorBox();
+                        }
                       }
-                    }
 
-                    /*
-                    //Build a string to display debugging info
-                    String text = "Active Points at: ";
-                    for (PointerPair point in points) {
-                      text += "(${point.x}, ${point.y}) with id: ${point.id} ";
-                    }
+                      /*
+                      //Build a string to display debugging info
+                      String text = "Active Points at: ";
+                      for (PointerPair point in points) {
+                        text += "(${point.x}, ${point.y}) with id: ${point.id} ";
+                      }
 
-                    text +=
-                    ". Deactivated Point at: (${event.position.dx} ,${event.position.dy}), with ID: $pointerId";
+                      text +=
+                      ". Deactivated Point at: (${event.position.dx} ,${event.position.dy}), with ID: $pointerId";
 
-                    //Create a snack bar to display the information in
-                    var snackBar = SnackBar(content: Text(text));
-                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                    */
-                  },
-                  child: Container(
-                    ///This is the actual area which collects the touch point information
-                    width: _boxSizes[1],
-                    height: _boxSizes[0],
-                    decoration: BoxDecoration(
-                      color: Colors.transparent,
-                      border: Border.all(width: 2.0, color: Colors.black),
+                      //Create a snack bar to display the information in
+                      var snackBar = SnackBar(content: Text(text));
+                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                      */
+                    },
+                    child: Container(
+                      ///This is the actual area which collects the touch point information
+                      width: _boxSizes[1],
+                      height: _boxSizes[0],
+                      decoration: BoxDecoration(
+                        color: Colors.transparent,
+                        border: Border.all(width: 2.0, color: Colors.black),
+                      ),
                     ),
                   ),
-                ),
-                //Text(_textContent),
-                Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: ElevatedButton(
+                  //Text(_textContent),
+                  SizedBox(
+                    height: widget.object == Objects.card ? 0 : 40
+                  ),
+                ]
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  /* //This is a debugging button
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all<Color>(Colors.indigo.shade100),
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        )
+                      )
+                    ),
+                    child: const Text("Return home"),
+                  ),
+                  */
+                  widget.object == Objects.card ?
+                  const SizedBox(height:0) :
+                  TextButton(
+                    onPressed: () {
+                      _skipAuth();
+                    },
+                    style: ButtonStyle(
+                      backgroundColor:
+                      MaterialStateProperty.all<Color>(Colors.indigo.shade100),
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        )
+                      )
+                    ),
+                    child: const Text("Skip this Authentication")
+                  ),
+                  widget.object == Objects.card ?
+                  const SizedBox(height:0) :
+                  ElevatedButton(
                     style: ButtonStyle(
                         backgroundColor: MaterialStateProperty.all<Color>(Colors.indigoAccent),
                         shape: MaterialStateProperty.all<RoundedRectangleBorder>(
@@ -392,46 +434,34 @@ class _AuthState extends State<Auth> {
                     },
                     child: const Text("Press to authenticate"),
                   ),
-                ),
-              ]
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all<Color>(Colors.indigo.shade100),
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      )
-                    )
-                  ),
-                  child: const Text("Return home"),
-                ),
-                TextButton(
-                  onPressed: () {
-                    _skipAuth();
-                  },
-                  style: ButtonStyle(
-                    backgroundColor:
-                    MaterialStateProperty.all<Color>(Colors.indigo.shade100),
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      )
-                    )
-                  ),
-                  child: const Text("Skip this Authentication")
-                ),
-              ]
-            )
-          ],
+                ]
+              )
+            ],
+          ),
         ),
       ),
+      floatingActionButton: widget.object == Objects.card ? Wrap(
+        direction: Axis.horizontal,
+        children: [
+          Container(
+            margin: const EdgeInsets.all(10),
+            child: FloatingActionButton(
+              heroTag: "skipBtn",
+              onPressed: () => _skipAuth(),
+              child: const Icon(Icons.arrow_back),
+            )
+          ),
+          Container(
+            margin: const EdgeInsets.all(10),
+            child: FloatingActionButton(
+              heroTag: "authBtn",
+              onPressed: () => _authenticateAttempt(),
+              child: const Icon(Icons.lock_open),
+            )
+          )
+        ]
+      ) :
+      null,
     );
   }
 }

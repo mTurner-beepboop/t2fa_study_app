@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'withdraw.dart';
-import 'questions.dart';
 import 'tutorial.dart';
 import 'auth/auth.dart';
 import 'utility/local.dart';
@@ -165,9 +164,10 @@ class _HomeState extends State<Home> {
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: const [Text("Menu"),]
+                children: const [Text("Menu", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),]
               ),
             ),
+            /* //Used for debugging questionnaire page, no longer needed
             ListTile(
               onTap: () {
                 Navigator.pop(context);
@@ -179,6 +179,7 @@ class _HomeState extends State<Home> {
               leading: const Icon(Icons.question_answer),
               title: const Text("Questionnaire"),
             ),
+            */
             ListTile(
               onTap: (){
                 Navigator.pop(context);
@@ -204,101 +205,106 @@ class _HomeState extends State<Home> {
           ]
         )
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Padding(
-              padding: const EdgeInsets.fromLTRB(20,10,20,20),
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.all(Radius.circular(10)),
-                  border: Border.all(width:2.0, color: Colors.indigo),
-                  color: Colors.indigoAccent,
-                ),
-                child: Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: Text(objText, style: const TextStyle(color: Colors.white))
-                ),
-              )
-          ),
-          const SizedBox(
-            height: 20,
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(20,20,20,10),
-            child:Container(
-              decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.all(Radius.circular(10)),
-                  border: Border.all(width:2.0, color: Colors.indigo),
-                  color: Colors.indigoAccent,
-              ),
-              child:
-                _active ?
-                const Padding(
-                  padding: EdgeInsets.all(10),
-                  child: Text("Thank you for participating in the Tangible 2-Factor Authentication follow-up study, press the button below to perform an authentication!", textAlign: TextAlign.center, style: TextStyle(color: Colors.white),),
-                ) :
-                const Padding(
-                  padding: EdgeInsets.all(10),
-                  child: Text("You have withdrawn from the study, if you haven't already, please contact ...", textAlign: TextAlign.center, style: TextStyle(color: Colors.white),), //TODO - Add correct contact information
-                )
+      body: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const SizedBox(
+              height: 40,
             ),
-          ),
-          const SizedBox(
-            height: 60,
-          ),
-          ElevatedButton(
-            onPressed: _active ?
-              () =>
-                showDialog<String>(
-                  context:context,
-                  builder: (BuildContext context) => AlertDialog(
-                    title: const Text("Authentication"),
-                    content: const Text("Do you have your object ready for authentication?"),
-                    actions: [
-                      ElevatedButton(onPressed: () {
-                        Navigator.pop(context, "Yes");
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => Auth(title: "Authentication Page", object: _object)),
-                        );
-                      },
-                          child: const Text("Yes")
-                      ),
-                      TextButton(
-                          child: const Text("No"),
-                          onPressed: () {
-                            Navigator.pop(context, "No");
-                          }
-                      )
-                    ]
-                  )
-                ) :
-              null,
-            style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all<Color>(Colors.indigoAccent),
-              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  side: const BorderSide(color: Colors.indigo, width:2.0)
-                )
-              )
-            ),
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(5,10,5,10),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
-                  Icon(
-                    Icons.lock_open,
-                    size: 130,
+            Padding(
+                padding: const EdgeInsets.fromLTRB(20,10,20,20),
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: const BorderRadius.all(Radius.circular(10)),
+                    border: Border.all(width:2.0, color: Colors.indigo),
+                    color: Colors.indigoAccent,
                   ),
-                  Text("Perform Authentication"),
-                ]
+                  child: Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: Text(objText, style: const TextStyle(color: Colors.white))
+                  ),
+                )
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20,20,20,10),
+              child:Container(
+                decoration: BoxDecoration(
+                    borderRadius: const BorderRadius.all(Radius.circular(10)),
+                    border: Border.all(width:2.0, color: Colors.indigo),
+                    color: Colors.indigoAccent,
+                ),
+                child:
+                  _active ?
+                  const Padding(
+                    padding: EdgeInsets.all(10),
+                    child: Text("Thank you for participating in the Tangible 2-Factor Authentication follow-up study, press the button below to perform an authentication!", textAlign: TextAlign.center, style: TextStyle(color: Colors.white),),
+                  ) :
+                  const Padding(
+                    padding: EdgeInsets.all(10),
+                    child: Text("You have withdrawn from the study, if you haven't already, please contact ...", textAlign: TextAlign.center, style: TextStyle(color: Colors.white),), //TODO - Add correct contact information
+                  )
+              ),
+            ),
+            const SizedBox(
+              height: 60,
+            ),
+            ElevatedButton(
+              onPressed: _active ?
+                () =>
+                  showDialog<String>(
+                    context:context,
+                    builder: (BuildContext context) => AlertDialog(
+                      title: const Text("Authentication"),
+                      content: const Text("Do you have your object ready for authentication?"),
+                      actions: [
+                        ElevatedButton(onPressed: () {
+                          Navigator.pop(context, "Yes");
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => Auth(title: "Authentication Page", object: _object)),
+                          );
+                        },
+                            child: const Text("Yes")
+                        ),
+                        TextButton(
+                            child: const Text("No"),
+                            onPressed: () {
+                              Navigator.pop(context, "No");
+                            }
+                        )
+                      ]
+                    )
+                  ) :
+                null,
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all<Color>(Colors.indigoAccent),
+                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    side: const BorderSide(color: Colors.indigo, width:2.0)
+                  )
+                )
+              ),
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(5,10,5,10),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: const [
+                    Icon(
+                      Icons.lock_open,
+                      size: 130,
+                    ),
+                    Text("Perform Authentication"),
+                  ]
+                )
               )
             )
-          )
-        ],
+          ],
+        )
       )
     );
   }
