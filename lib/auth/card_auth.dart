@@ -4,7 +4,7 @@ import 'pointer_pair.dart';
 bool cardAuth(List<PointerPair?> points) {
   final List<int> combination = [6,4,2];
 
-  int inaccuracy = 10;
+  int inaccuracy = 50;
   List<PointerPair?> temp = [null, null];
   int dots = 0;
   List<int> dotList = [];

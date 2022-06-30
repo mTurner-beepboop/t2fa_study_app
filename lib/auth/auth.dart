@@ -102,6 +102,7 @@ class _AuthState extends State<Auth> {
 
       firestoreAuthSave(true, false, _attemptNum, getStringObject(widget.object), _timeTaken, _participantNum, _initialTime);
       _redirectToQuestions(false);
+      return;
     }
 
     //Check authentication attempt number (if 3 then end)
@@ -113,6 +114,7 @@ class _AuthState extends State<Auth> {
 
       firestoreAuthSave(false, false, _attemptNum, getStringObject(widget.object), _timeTaken, _participantNum, _initialTime);
       _redirectToQuestions(false);
+      return;
     }
 
     //Alter required variables after attempt
