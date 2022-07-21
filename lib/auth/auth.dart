@@ -213,7 +213,7 @@ class _AuthState extends State<Auth> {
           break;
         case (Objects.pendant):
           _boxSizes = [200, 200];
-          _instructions = "Ensure the object is in the correct combination, touch it to the screen and press authenticate";
+          _instructions = "Ensure the object is in the correct combination, firmly touch it to the screen and press authenticate";
           break;
         default: //Error case
           _boxSizes=[0,0];

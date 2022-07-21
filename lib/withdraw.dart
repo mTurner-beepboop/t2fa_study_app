@@ -69,7 +69,7 @@ class _WithdrawState extends State<Withdraw> {
                         unsubscribe().then((result) {
                           setState(() {
                             isActive = false;
-                            text = "You have withdrawn from the study. Please contact ... to confirm this and discuss any compensation."; //TODO - update this with actual information
+                            text = "You have withdrawn from the study. Please contact the team at tangibleauthteam@gmail.com to confirm this and discuss any compensation.";
                           });
                           Navigator.pop(context, 'Yes');
                         });

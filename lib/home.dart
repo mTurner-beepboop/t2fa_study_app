@@ -250,7 +250,7 @@ class _HomeState extends State<Home> {
                   ) :
                   const Padding(
                     padding: EdgeInsets.all(10),
-                    child: Text("You have withdrawn from the study, if you haven't already, please contact ...", textAlign: TextAlign.center, style: TextStyle(color: Colors.white),), //TODO - Add correct contact information
+                    child: Text("You have withdrawn from the study, if you haven't already, please contact the team at tangibleauthteam@gmail.com", textAlign: TextAlign.center, style: TextStyle(color: Colors.white),),
                   )
               ),
             ),
