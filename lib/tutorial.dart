@@ -34,7 +34,7 @@ class _TutorialState extends State<Tutorial> {
           _title = "Cube";
           _text1 = "This model is built to replicate a die, leaning in to the idea of authentication objects being multi-use. To authenticate, touch the correct four sides to the screen in the correct order, the press the button to authenticate.";
           _text2 = "The combination set for this objects requires the sequence: 4 -> 1 -> 4 -> 2. When touching the screen with the object, ensure that the face of the object is completely within the outlined box and that you are touching any of the black dots on any of the sides.";
-          _controller = VideoPlayerController.asset("assets/videos/SampleVideo_1280x720_1mb.mp4");
+          _controller = VideoPlayerController.asset("assets/videos/cube_tutorial.mp4");
           _initialiseVideoPlayerFuture = _controller.initialize();
           _controller.setLooping(true);
         });
@@ -44,7 +44,7 @@ class _TutorialState extends State<Tutorial> {
           _title = "Card";
           _text1 = "This model is built to the standard size of a credit card, allowing it to be convenient to carry in a wallet or purse. To authenticate you must enact a 'turning' motion over the ring of dots, like you would a safe lock, then touch the black square and finally the on-screen button.";
           _text2 = "To perform the 'turning' motion, starting from any of the dots, slide your finger over 4 dots in a clockwise direction, then 6 dots in a counter-clockwise direction. Ensure the the model is placed within the bounds of the box on the authentication screen and that the model does not slide out of place.";
-          _controller = VideoPlayerController.asset("assets/videos/SampleVideo_1280x720_1mb.mp4");
+          _controller = VideoPlayerController.asset("assets/videos/card_tutorial.mp4");
           _initialiseVideoPlayerFuture = _controller.initialize();
           _controller.setLooping(true);
         });
@@ -53,8 +53,8 @@ class _TutorialState extends State<Tutorial> {
         setState((){
           _title = "Pendant";
           _text1 = "This model is built to act as a combination lock, a more familiar representation of security. To use, simple rotate the layers until the given combination is aligned in a column, touch the model to the screen and press the button to authenticate.";
-          _text2 = "The combination set for this model is 6-1-7. When touching the model to the screen, ensure that you touch both black points on the top surface of the model (one on the main body, the other being the axis).";
-          _controller = VideoPlayerController.asset("assets/videos/SampleVideo_1280x720_1mb.mp4");
+          _text2 = "The combination set for this model is 6-1-7. When touching the model to the screen, ensure that you touch both black points on the top surface of the model (one on the main body, the other being the axis). Try to touch the model to the screen with the side showing the combination facing you.";
+          _controller = VideoPlayerController.asset("assets/videos/pendant_tutorial.mp4");
           _initialiseVideoPlayerFuture = _controller.initialize();
           _controller.setLooping(true);
         });
@@ -64,9 +64,6 @@ class _TutorialState extends State<Tutorial> {
           _title = "Error";
           _text1 = "This should not be allowed";
           _text2 = "Here's a sample video of a rabbit";
-          _controller = VideoPlayerController.asset("assets/videos/SampleVideo_1280x720_1mb.mp4");
-          _initialiseVideoPlayerFuture = _controller.initialize();
-          _controller.setLooping(true);
         });
         break;
     }
@@ -104,7 +101,7 @@ class _TutorialState extends State<Tutorial> {
             height: 40,
           ),
           //Video content
-          FutureBuilder(
+          _title != "Error" ? FutureBuilder(
             future: _initialiseVideoPlayerFuture,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.done) {
@@ -124,28 +121,31 @@ class _TutorialState extends State<Tutorial> {
               }
             },
           )
+          : const SizedBox(height:0),
         ]
       ),
       //Button to control the video playback
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // Wrap the play or pause in a call to `setState`. This ensures the
-          // correct icon is shown.
-          setState(() {
-            // If the video is playing, pause it.
-            if (_controller.value.isPlaying) {
-              _controller.pause();
-            } else {
-              // If the video is paused, play it.
-              _controller.play();
-            }
-          });
-        },
-        // Display the correct icon depending on the state of the player.
-        child: Icon(
-        _controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
-        ),
-      )
+      floatingActionButton:
+        _title != "Error" ? FloatingActionButton(
+          onPressed: () {
+            // Wrap the play or pause in a call to `setState`. This ensures the
+            // correct icon is shown.
+            setState(() {
+              // If the video is playing, pause it.
+              if (_controller.value.isPlaying) {
+                _controller.pause();
+              } else {
+                // If the video is paused, play it.
+                _controller.play();
+              }
+            });
+          },
+          // Display the correct icon depending on the state of the player.
+          child: Icon(
+          _controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
+          ),
+        )
+        : null,
     );
   }
 }
