@@ -24,6 +24,7 @@ class _HomeState extends State<Home> {
   String? _strObj; //The string representation of the object the user has
   bool _active = true; //Whether the user is still participating
   String objText = "You have yet to select an object"; //String var for textbox
+  bool _live = false; //Whether the study has begun
 
   @override
   void initState(){
@@ -41,6 +42,14 @@ class _HomeState extends State<Home> {
     }
     //Read object from file
     _updateObj();
+
+    //Check if the study is properly live
+    getLiveStatus().then((value) =>
+      setState((){
+        print(value);
+        _live = value;
+      })
+    );
   }
 
   ///Retrieves the object initially saved to the local file and updates the
@@ -183,6 +192,16 @@ class _HomeState extends State<Home> {
               title: const Text("Questionnaire"),
             ),
             */
+            !_live ? ListTile(
+              onTap: () {
+                setLiveStatus();
+                setState((){
+                  _live = true;
+                });
+              },
+              leading: const Icon(Icons.check),
+              title: const Text("Begin the Study"),
+            ) : const SizedBox(height: 0),
             ListTile(
               onTap: (){
                 Navigator.pop(context);
@@ -200,7 +219,13 @@ class _HomeState extends State<Home> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => const Withdraw()),
-                );
+                ).then((val){ //Check if the user withdrew and update if so
+                  getWithdrawn().then((value){
+                    setState((){
+                      _active = value;
+                    });
+                  });
+                });
               },
               leading: const Icon(Icons.highlight_remove),
               title: const Text("Withdraw participation"),
@@ -271,7 +296,7 @@ class _HomeState extends State<Home> {
                           Navigator.pop(context, "Yes");
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => Auth(title: "Authentication Page", object: _object)),
+                            MaterialPageRoute(builder: (context) => Auth(title: "Authentication Page", object: _object, live: _live)),
                           );
                         },
                             child: const Text("Yes")

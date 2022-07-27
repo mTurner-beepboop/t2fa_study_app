@@ -109,3 +109,24 @@ Future<File> setWithdrawn() async {
   final f = File('$path/inactive.txt');
   return f.writeAsString('false');
 }
+
+///Get the status of the study - ie false indicate still in orientation, true indicted study live
+Future<bool> getLiveStatus() async {
+  final path = await _localPath;
+  try {
+    final f = File('$path/live.txt');
+    final contents = await f.readAsString();
+    bool live = contents.isNotEmpty; //If file is not empty, then study is live, else still in orientation
+    return live;
+  }
+  catch (e){
+    return false; //If file doesn't exist, then still in orientation
+  }
+}
+
+///Set the status of the study - see above
+Future<File> setLiveStatus() async {
+  final path = await _localPath;
+  final f = File('$path/live.txt');
+  return f.writeAsString('true');
+}

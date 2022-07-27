@@ -69,7 +69,9 @@ flutter:
   #   - images/a_dot_ham.jpeg
 
   assets:
-    - assets/videos/SampleVideo_1280x720_1mb.mp4
+    - assets/videos/pendant_tutorial.mp4
+    - assets/videos/cube_tutorial.mp4
+    - assets/videos/card_tutorial.mp4
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

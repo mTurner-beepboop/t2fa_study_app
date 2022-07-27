@@ -43,7 +43,7 @@ class _TutorialState extends State<Tutorial> {
         setState((){
           _title = "Card";
           _text1 = "This model is built to the standard size of a credit card, allowing it to be convenient to carry in a wallet or purse. To authenticate you must enact a 'turning' motion over the ring of dots, like you would a safe lock, then touch the black square and finally the on-screen button.";
-          _text2 = "To perform the 'turning' motion, starting from any of the dots, slide your finger over 4 dots in a clockwise direction, then 6 dots in a counter-clockwise direction. Ensure the the model is placed within the bounds of the box on the authentication screen and that the model does not slide out of place.";
+          _text2 = "To perform the 'turning' motion, starting from any of the dots, slide your finger over 6 dots in a clockwise direction, then 4 dots in a counter-clockwise direction, and finally 2 dots in a clockwise direction (Watch the tutorial video for a demonstration). Ensure the the model is placed within the bounds of the box on the authentication screen and that the model does not slide out of place.";
           _controller = VideoPlayerController.asset("assets/videos/card_tutorial.mp4");
           _initialiseVideoPlayerFuture = _controller.initialize();
           _controller.setLooping(true);

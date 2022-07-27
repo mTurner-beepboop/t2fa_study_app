@@ -12,12 +12,13 @@ import 'package:t2fa_usability_app/utility/local.dart';
 ///same name), a simple help popup on the appbar, and a method of timing the
 ///attempt
 class Auth extends StatefulWidget {
-  const Auth({Key? key, required this.title, required this.object})
+  const Auth({Key? key, required this.title, required this.object, required this.live})
       : super(key: key);
 
   final Objects?
       object; //This should never be null, but required in this implementation
   final String title;
+  final bool live;
 
   @override
   State<Auth> createState() => _AuthState();
@@ -60,7 +61,7 @@ class _AuthState extends State<Auth> {
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder: (BuildContext context) => Questions(skip: skip, time: _initialTime),
+        builder: (BuildContext context) => Questions(skip: skip, time: _initialTime, live: widget.live),
       ),
     );
   }
@@ -100,7 +101,16 @@ class _AuthState extends State<Auth> {
       var snackBar = SnackBar(content: Text("Success in $_attemptNum attempt(s)!"));
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
 
-      firestoreAuthSave(true, false, _attemptNum, getStringObject(widget.object), _timeTaken, _participantNum, _initialTime);
+      if (widget.live) {
+        firestoreAuthSave(
+            true,
+            false,
+            _attemptNum,
+            getStringObject(widget.object),
+            _timeTaken,
+            _participantNum,
+            _initialTime);
+      }
       _redirectToQuestions(false);
       return;
     }
@@ -112,7 +122,16 @@ class _AuthState extends State<Auth> {
       var snackBar = const SnackBar(content: Text("This attempt was a failure"));
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
 
-      firestoreAuthSave(false, false, _attemptNum, getStringObject(widget.object), _timeTaken, _participantNum, _initialTime);
+      if (widget.live) {
+        firestoreAuthSave(
+            false,
+            false,
+            _attemptNum,
+            getStringObject(widget.object),
+            _timeTaken,
+            _participantNum,
+            _initialTime);
+      }
       _redirectToQuestions(false);
       return;
     }
@@ -148,7 +167,9 @@ class _AuthState extends State<Auth> {
     var snackBar = const SnackBar(content: Text("This attempt was skipped."));
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
 
-    firestoreAuthSave(false, true, _attemptNum, getStringObject(widget.object), _timeTaken, _participantNum, _initialTime);
+    if (widget.live) {
+      firestoreAuthSave(false, true, _attemptNum, getStringObject(widget.object), _timeTaken, _participantNum, _initialTime);
+    }
     _redirectToQuestions(true);
   }
 

@@ -8,10 +8,11 @@ import 'utility/local.dart';
 ///authentication attempt. Currently contains question templates for both free text input
 ///and multiple choice questions
 class Questions extends StatefulWidget {
-  const Questions({Key? key, required this.skip, required this.time}) : super(key: key);
+  const Questions({Key? key, required this.skip, required this.time, required this.live}) : super(key: key);
 
   final num time; //Stores the time the authentication took place (so it can be linked to the authentication attempt)
   final bool skip; //Stores whether the authentication was skipped
+  final bool live; //Stores whether the study is live on this device (so it only sends valid data)
 
   @override
   State<Questions> createState() => _QuestionsState();
@@ -26,17 +27,18 @@ class _QuestionsState extends State<Questions> {
         automaticallyImplyLeading: false,
       ),
       body: Center(
-        child: QuestionsForm(time: widget.time, skip: widget.skip),
+        child: QuestionsForm(time: widget.time, skip: widget.skip, live: widget.live),
       ),
     );
   }
 }
 
 class QuestionsForm extends StatefulWidget {
-  const QuestionsForm({Key? key, required this.time, required this.skip}) : super(key: key);
+  const QuestionsForm({Key? key, required this.time, required this.skip, required this.live}) : super(key: key);
 
   final num time;
   final bool skip;
+  final bool live;
 
   @override
   State<QuestionsForm> createState() => _QuestionsFormState();
@@ -49,7 +51,9 @@ class _QuestionsFormState extends State<QuestionsForm> {
   String? error; //A string object used to display the error text if an answer is empty
 
   void _handleSubmit(ans){
-    getParticipantNum().then((value) => firestoreQuestionsSave(ans, widget.time, widget.skip, value));
+    if (widget.live){
+      getParticipantNum().then((value) => firestoreQuestionsSave(ans, widget.time, widget.skip, value));
+    }
   }
 
   @override
