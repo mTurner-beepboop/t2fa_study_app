@@ -56,12 +56,12 @@ class _AuthState extends State<Auth> {
     points.removeWhere((item) => item.id == pointerId);
   }
 
-  ///Moves the app to the questionnaire page, taking skip as an argument
-  void _redirectToQuestions(skip) {
+  ///Moves the app to the questionnaire page, taking skip and success as an argument
+  void _redirectToQuestions(skip, success) {
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder: (BuildContext context) => Questions(skip: skip, time: _initialTime, live: widget.live),
+        builder: (BuildContext context) => Questions(skip: skip, success: success, time: _initialTime, live: widget.live),
       ),
     );
   }
@@ -111,7 +111,7 @@ class _AuthState extends State<Auth> {
             _participantNum,
             _initialTime);
       }
-      _redirectToQuestions(false);
+      _redirectToQuestions(false, true);
       return;
     }
 
@@ -132,7 +132,7 @@ class _AuthState extends State<Auth> {
             _participantNum,
             _initialTime);
       }
-      _redirectToQuestions(false);
+      _redirectToQuestions(false, false);
       return;
     }
 
@@ -170,7 +170,7 @@ class _AuthState extends State<Auth> {
     if (widget.live) {
       firestoreAuthSave(false, true, _attemptNum, getStringObject(widget.object), _timeTaken, _participantNum, _initialTime);
     }
-    _redirectToQuestions(true);
+    _redirectToQuestions(true, false);
   }
 
   /*

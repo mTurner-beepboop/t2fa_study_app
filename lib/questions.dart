@@ -8,11 +8,12 @@ import 'utility/local.dart';
 ///authentication attempt. Currently contains question templates for both free text input
 ///and multiple choice questions
 class Questions extends StatefulWidget {
-  const Questions({Key? key, required this.skip, required this.time, required this.live}) : super(key: key);
+  const Questions({Key? key, required this.skip, required this.success, required this.time, required this.live}) : super(key: key);
 
   final num time; //Stores the time the authentication took place (so it can be linked to the authentication attempt)
   final bool skip; //Stores whether the authentication was skipped
   final bool live; //Stores whether the study is live on this device (so it only sends valid data)
+  final bool success; //Stores whether the authentication was a success
 
   @override
   State<Questions> createState() => _QuestionsState();
@@ -27,18 +28,19 @@ class _QuestionsState extends State<Questions> {
         automaticallyImplyLeading: false,
       ),
       body: Center(
-        child: QuestionsForm(time: widget.time, skip: widget.skip, live: widget.live),
+        child: QuestionsForm(time: widget.time, skip: widget.skip, success: widget.success, live: widget.live),
       ),
     );
   }
 }
 
 class QuestionsForm extends StatefulWidget {
-  const QuestionsForm({Key? key, required this.time, required this.skip, required this.live}) : super(key: key);
+  const QuestionsForm({Key? key, required this.time, required this.skip, required this.success, required this.live}) : super(key: key);
 
   final num time;
   final bool skip;
   final bool live;
+  final bool success;
 
   @override
   State<QuestionsForm> createState() => _QuestionsFormState();
@@ -46,24 +48,761 @@ class QuestionsForm extends StatefulWidget {
 
 class _QuestionsFormState extends State<QuestionsForm> {
   final _formKey = GlobalKey<FormState>();
-  List<dynamic> answers = ["", null]; //The final state of all the answers
-  var _iToggle1 = [false, false, false, false, false]; //The state of the MCQ answer, used to decide which item is highlighted
+  List<dynamic> answers = [null, null, null, null, null, null, null]; //The final state of all the answers
+  List<bool> phase = [true, false, false, false]; //Phase of answers to questions
   String? error; //A string object used to display the error text if an answer is empty
 
   void _handleSubmit(ans){
+    print(ans);
     if (widget.live){
-      getParticipantNum().then((value) => firestoreQuestionsSave(ans, widget.time, widget.skip, value));
+      getParticipantNum().then((value) => firestoreQuestionsSave(ans, widget.time, widget.skip, widget.success, value));
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-      key: _formKey,
-      child: SingleChildScrollView(
-        child: Column(
+    return SingleChildScrollView(
+      child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            /// ------------------ Success -----------------
+            widget.success ?
+              Padding(
+                padding: const EdgeInsets.all(10),
+                child: Column(
+                  children: [
+                    //Question 1
+                    phase[0] ?
+                    Padding(
+                      padding: const EdgeInsets.all(10),
+                      child:
+                      Column(
+                        children: [
+                          const Text("Where are you currently?"),
+                          TextButton(
+                            onPressed: () {
+                              setState(() {
+                                answers[0] = "Home";
+                                phase[0] = false;
+                                phase[1] = true;
+                              });
+                            },
+                            child: const Text("At Home"),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              setState(() {
+                                answers[0] = "Work";
+                                phase[0] = false;
+                                phase[1] = true;
+                              });
+                            },
+                            child: const Text("At Work"),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              setState(() {
+                                answers[0] = "Transit";
+                                phase[0] = false;
+                                phase[1] = true;
+                              });
+                            },
+                            child: const Text(
+                                "In Transit (eg. bus or train)"),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              setState(() {
+                                answers[0] = "Public";
+                                phase[0] = false;
+                                phase[1] = true;
+                              });
+                            },
+                            child: const Text(
+                                "In Public Place (eg. restaurant or park)"),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              setState(() {
+                                answers[0] = "Private";
+                                phase[0] = false;
+                                phase[1] = true;
+                              });
+                            },
+                            child: const Text(
+                                "In Private Place (eg. home of a friend)"),
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Text("Other (Please specify)", style: TextStyle(color: Colors.indigo, fontWeight: FontWeight.w500)),
+                              SizedBox(
+                                width: 200,
+                                child: TextField(
+                                  onSubmitted: (value) {
+                                    setState(() {
+                                      answers[0] = "Other";
+                                      answers[1] = value;
+                                      phase[0] = false;
+                                      phase[1] = true;
+                                    });
+                                  },
+                                )
+                              )
+                            ]
+                          )
+                        ]
+                      )
+                    )
+                    : const SizedBox(height:0),
+                    //Question 2
+                    phase[1] ?
+                    Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: Column(
+                        children: [
+                          const Text("Did you have any problems with the authentication?"),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              TextButton(
+                                onPressed: () {
+                                  setState((){
+                                    answers[2] = "No";
+                                    phase[1] = false;
+                                    phase[2] = true;
+                                  });
+                                },
+                                child: const Text("No"),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  setState((){
+                                    answers[2] = "Yes";
+                                  });
+                                },
+                                child: const Text("Yes"),
+                              )
+                            ]
+                          ),
+                          answers[2] != "Yes" ? const SizedBox(height:0) :
+                          Column(
+                            children:[
+                              const Text("What kind of issue did you experience?"),
+                              TextButton(
+                                onPressed: () {
+                                  setState((){
+                                    answers[3] = "Search for item";
+                                    phase[1] = false;
+                                    phase[2] = true;
+                                  });
+                                },
+                                child: const Text("I had to look for the item"),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  setState((){
+                                    answers[3] = "Multiple attempts";
+                                    phase[1] = false;
+                                    phase[2] = true;
+                                  });
+                                },
+                                child: const Text("I needed multiple attempts"),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  setState((){
+                                    answers[3] = "Poor timing";
+                                    phase[1] = false;
+                                    phase[2] = true;
+                                  });
+                                },
+                                child: const Text("The timing of the authentication was inconvenient"),
+                              )
+                            ]
+                          ),
+                        ],
+                      ),
+                    )
+                    : const SizedBox(height:0),
+                    //Question 3
+                    phase[2] ?
+                    Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: Column(
+                        children: [
+                          //Question 3a
+                          Padding(
+                            padding: const EdgeInsets.all(10),
+                            child:
+                            Column(
+                                children: [
+                                  const Text("Would you like to perform this authentication in a similar setting in your daily life?"),
+                                  TextButton(
+                                    onPressed: (){
+                                      setState((){
+                                        answers[4] = "No";
+                                      });
+                                    },
+                                    child: const Text("No"),
+                                  ),
+                                  TextButton(
+                                    onPressed:(){
+                                      setState((){
+                                        answers[4] = "Yes";
+                                      });
+                                    },
+                                    child: const Text("Yes"),
+                                  ),
+                                ]
+                            ),
+                          ),
+                          //Question 3b
+                          answers[4] == null ? const SizedBox(height:0) :
+                          Padding(
+                            padding: const EdgeInsets.all(10),
+                            child:
+                            Column(
+                                children: [
+                                  const Text("Why do you feel this way?"),
+                                  SizedBox(
+                                      width: 300,
+                                      child: TextField(
+                                        onSubmitted: (value) {
+                                          setState((){
+                                            answers[5] = value;
+                                            phase[2] = false;
+                                            phase[3] = true;
+                                          });
+                                        },
+                                      )
+                                  ),
+                                ]
+                            ),
+                          ),
+                        ]
+                      )
+                    )
+                    : const SizedBox(height:0),
+                    //Question 4
+                    phase[3] ?
+                    Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: Column(
+                      children: [
+                        Column(
+                          children: [
+                            const Text("Do you have any further feedback?"),
+                            SizedBox(
+                              width: 300,
+                              child: TextField(
+                                onChanged: (value) {
+                                  setState((){
+                                    answers[6] = value;
+                                  });
+                                },
+                              ),
+                            ),
+                          ]
+                        )
+                      ],
+                    ),
+                  )
+                    : const SizedBox(height:0),
+                  ]
+                )
+              )
+            :
+            /// ------------------- Skip -----------------------
+            widget.skip ?
+            Padding(
+              padding: const EdgeInsets.all(10),
+              child: Column(
+                children: [
+                  //Question 1
+                  phase[0] ?
+                  Padding(
+                    padding: const EdgeInsets.all(10),
+                    child:
+                    Column(
+                      children: [
+                        const Text("Where are you currently?"),
+                        TextButton(
+                          onPressed: () {
+                            setState(() {
+                              answers[0] = "Home";
+                              phase[0] = false;
+                              phase[1] = true;
+                            });
+                          },
+                          child: const Text("At Home"),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            setState(() {
+                              answers[0] = "Work";
+                              phase[0] = false;
+                              phase[1] = true;
+                            });
+                          },
+                          child: const Text("At Work"),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            setState(() {
+                              answers[0] = "Transit";
+                              phase[0] = false;
+                              phase[1] = true;
+                            });
+                          },
+                          child: const Text("In Transit (eg. bus or train)"),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            setState(() {
+                              answers[0] = "Public";
+                              phase[0] = false;
+                              phase[1] = true;
+                            });
+                          },
+                          child: const Text("In Public Place (eg. restaurant or park)"),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            setState(() {
+                              answers[0] = "Private";
+                              phase[0] = false;
+                              phase[1] = true;
+                            });
+                          },
+                          child: const Text("In Private Place (eg. home of a friend)"),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Text("Other (Please specify)", style: TextStyle(color: Colors.indigo, fontWeight: FontWeight.w500)),
+                            SizedBox(
+                              width: 200,
+                              child: TextField(
+                                onSubmitted: (value) {
+                                  setState(() {
+                                    answers[0] = "Other";
+                                    answers[1] = value;
+                                    phase[0] = false;
+                                    phase[1] = true;
+                                  });
+                                },
+                              )
+                            )
+                          ]
+                        )
+                      ]
+                    )
+                  )
+                  : const SizedBox(height:0),
+                  //Question 2
+                  phase[1] ?
+                  Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: Column(
+                      children: [
+                        const Text("What kind of problem did you experience?"),
+                        TextButton(
+                          onPressed: () {
+                            setState(() {
+                              answers[2] = "Not Available";
+                              phase[1] = false;
+                              phase[2] = true;
+                            });
+                          },
+                          child: const Text("The item was not available"),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            setState(() {
+                              answers[2] = "Multiple attempts";
+                              phase[1] = false;
+                              phase[2] = true;
+                            });
+                          },
+                          child: const Text("I needed multiple attempts"),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            setState(() {
+                              answers[2] = "Inconvenient";
+                              phase[1] = false;
+                              phase[2] = true;
+                            });
+                          },
+                          child: const Text("The timing of the authentication was not convenient"),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            setState(() {
+                              answers[2] = "Not recognised";
+                              phase[1] = false;
+                              phase[2] = true;
+                            });
+                          },
+                          child: const Text("The item was not recognised"),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            setState(() {
+                              answers[2] = "Accident";
+                              phase[1] = false;
+                              phase[2] = true;
+                            });
+                          },
+                          child: const Text("I've accidentally skipped"),
+                        ),
+                      ]
+                    )
+                  )
+                  : const SizedBox(height:0),
+                  //Question 3
+                  phase[2] ?
+                  Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: Column(
+                      children: [
+                        //Question 3a
+                        Padding(
+                          padding: const EdgeInsets.all(10),
+                          child:
+                          Column(
+                              children: [
+                                const Text("Would you like to perform this authentication in a similar setting in your daily life?"),
+                                TextButton(
+                                  onPressed: (){
+                                    setState((){
+                                      answers[4] = "No";
+                                    });
+                                  },
+                                  child: const Text("No"),
+                                ),
+                                TextButton(
+                                  onPressed:(){
+                                    setState((){
+                                      answers[4] = "Yes";
+                                    });
+                                  },
+                                  child: const Text("Yes"),
+                                ),
+                              ]
+                          ),
+                        ),
+                        //Question 3b
+                        answers[4] == null ? const SizedBox(height:0) :
+                        Padding(
+                          padding: const EdgeInsets.all(10),
+                          child:
+                          Column(
+                              children: [
+                                const Text("Why do you feel this way?"),
+                                SizedBox(
+                                    width: 300,
+                                    child: TextField(
+                                      onSubmitted: (value) {
+                                        setState((){
+                                          answers[5] = value;
+                                          phase[2] = false;
+                                          phase[3] = true;
+                                        });
+                                      },
+                                    )
+                                ),
+                              ]
+                          ),
+                        ),
+                      ]
+                    )
+                  )
+                  : const SizedBox(height:0),
+                  //Question 4
+                  phase[3] ?
+                  Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: Column(
+                      children: [
+                        Column(
+                            children: [
+                              const Text("Do you have any further feedback?"),
+                              SizedBox(
+                                width: 300,
+                                child: TextField(
+                                  onChanged: (value) {
+                                    setState((){
+                                      answers[6] = value;
+                                    });
+                                  },
+                                ),
+                              ),
+                            ]
+                        )
+                      ],
+                    ),
+                  )
+                  : const SizedBox(height:0),
+                ]
+              ),
+            ) :
+            /// ------------------- Failure --------------------
+            Padding(
+              padding: const EdgeInsets.all(10),
+              child: Column(
+                children: [
+                  //Question 1
+                  phase[0] ?
+                  Padding(
+                      padding: const EdgeInsets.all(10),
+                      child:
+                      Column(
+                          children: [
+                            const Text("Where are you currently?"),
+                            TextButton(
+                              onPressed: () {
+                                setState(() {
+                                  answers[0] = "Home";
+                                  phase[0] = false;
+                                  phase[1] = true;
+                                });
+                              },
+                              child: const Text("At Home"),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                setState(() {
+                                  answers[0] = "Work";
+                                  phase[0] = false;
+                                  phase[1] = true;
+                                });
+                              },
+                              child: const Text("At Work"),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                setState(() {
+                                  answers[0] = "Transit";
+                                  phase[0] = false;
+                                  phase[1] = true;
+                                });
+                              },
+                              child: const Text("In Transit (eg. bus or train)"),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                setState(() {
+                                  answers[0] = "Public";
+                                  phase[0] = false;
+                                  phase[1] = true;
+                                });
+                              },
+                              child: const Text("In Public Place (eg. restaurant or park)"),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                setState(() {
+                                  answers[0] = "Private";
+                                  phase[0] = false;
+                                  phase[1] = true;
+                                });
+                              },
+                              child: const Text("In Private Place (eg. home of a friend)"),
+                            ),
+                            Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const Text("Other (Please specify)", style: TextStyle(color: Colors.indigo, fontWeight: FontWeight.w500)),
+                                  SizedBox(
+                                      width: 200,
+                                      child: TextField(
+                                        onSubmitted: (value) {
+                                          setState(() {
+                                            answers[0] = "Other";
+                                            answers[1] = value;
+                                            phase[0] = false;
+                                            phase[1] = true;
+                                          });
+                                        },
+                                      )
+                                  )
+                                ]
+                            )
+                          ]
+                      )
+                  )
+                  : const SizedBox(height:0),
+                  //Question 2
+                  phase[1] ?
+                  Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: Column(
+                        children: [
+                          const Text("What kind of problem did you experience?"),
+                          TextButton(
+                            onPressed: () {
+                              setState(() {
+                                answers[2] = "Not Available";
+                                phase[1] = false;
+                                phase[2] = true;
+                              });
+                            },
+                            child: const Text("The item was not available"),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              setState(() {
+                                answers[2] = "Multiple attempts";
+                                phase[1] = false;
+                                phase[2] = true;
+                              });
+                            },
+                            child: const Text("I needed multiple attempts"),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              setState(() {
+                                answers[2] = "Inconvenient";
+                                phase[1] = false;
+                                phase[2] = true;
+                              });
+                            },
+                            child: const Text("The timing of the authentication was not convenient"),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              setState(() {
+                                answers[2] = "Not recognised";
+                                phase[1] = false;
+                                phase[2] = true;
+                              });
+                            },
+                            child: const Text("The item was not recognised"),
+                          ),
+                        ]
+                      )
+                  )
+                  : const SizedBox(height:0),
+                  //Question 3
+                  phase[2] ?
+                  Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: Column(
+                          children: [
+                            //Question 3a
+                            Padding(
+                              padding: const EdgeInsets.all(10),
+                              child:
+                              Column(
+                                  children: [
+                                    const Text("Would you like to perform this authentication in a similar setting in your daily life?"),
+                                    TextButton(
+                                      onPressed: (){
+                                        setState((){
+                                          answers[4] = "No";
+                                        });
+                                      },
+                                      child: const Text("No"),
+                                    ),
+                                    TextButton(
+                                      onPressed:(){
+                                        setState((){
+                                          answers[4] = "Yes";
+                                        });
+                                      },
+                                      child: const Text("Yes"),
+                                    ),
+                                  ]
+                              ),
+                            ),
+                            //Question 3b
+                            answers[4] == null ? const SizedBox(height:0) :
+                            Padding(
+                              padding: const EdgeInsets.all(10),
+                              child:
+                              Column(
+                                  children: [
+                                    const Text("Why do you feel this way?"),
+                                    SizedBox(
+                                        width: 300,
+                                        child: TextField(
+                                          onSubmitted: (value) {
+                                            setState((){
+                                              answers[5] = value;
+                                              phase[2] = false;
+                                              phase[3] = true;
+                                            });
+                                          },
+                                        )
+                                    ),
+                                  ]
+                              ),
+                            ),
+                          ]
+                      )
+                  )
+                  : const SizedBox(height:0),
+                  //Question 4
+                  phase[3] ?
+                  Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: Column(
+                      children: [
+                        Column(
+                            children: [
+                              const Text("Do you have any further feedback?"),
+                              SizedBox(
+                                width: 300,
+                                child: TextField(
+                                  onChanged: (value) {
+                                    setState((){
+                                      answers[6] = value;
+                                    });
+                                  },
+                                ),
+                              ),
+                            ]
+                        )
+                      ],
+                    ),
+                  )
+                  : const SizedBox(height:0),
+                ]
+              )
+            )
+            ,
+            /// ------------------- Submit ---------------------
+            !phase[3] ? const SizedBox(height:0) :
+            ElevatedButton(
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all<Color>(Colors.indigoAccent),
+                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    side: const BorderSide(color: Colors.indigo, width:2.0)
+                  )
+                )
+              ),
+              onPressed: () {
+                _handleSubmit(answers);
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (BuildContext context) => const Home(firstStart: false)
+                  ),
+                );
+              },
+              child: const Text("Submit"),
+            )
+          ]
+      ),
+    );
+  }
+
+
+/**
             ///Text Input Template
             Padding(
               padding: const EdgeInsets.all(10),
@@ -186,5 +925,5 @@ class _QuestionsFormState extends State<QuestionsForm> {
         )
       )
     );
-  }
+    **/
 }

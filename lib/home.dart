@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'withdraw.dart';
@@ -46,7 +47,6 @@ class _HomeState extends State<Home> {
     //Check if the study is properly live
     getLiveStatus().then((value) =>
       setState((){
-        print(value);
         _live = value;
       })
     );
@@ -198,6 +198,7 @@ class _HomeState extends State<Home> {
                 setState((){
                   _live = true;
                 });
+                FirebaseMessaging.instance.subscribeToTopic("active_participant");
               },
               leading: const Icon(Icons.check),
               title: const Text("Begin the Study"),

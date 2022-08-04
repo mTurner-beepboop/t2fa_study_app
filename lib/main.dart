@@ -47,7 +47,7 @@ void main() async {
   var first = false;
   if (storedObj == "None"){
     first = true;
-    FirebaseMessaging.instance.subscribeToTopic("active_participant");
+    //FirebaseMessaging.instance.subscribeToTopic("active_participant");
   }
 
   //Display the home page here
