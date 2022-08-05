@@ -85,46 +85,48 @@ class _TutorialState extends State<Tutorial> {
       appBar: AppBar(
         title: const Text("Help"),
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          //Text content
-          Text(_title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 40), textAlign: TextAlign.center),
-          Padding(
-            padding: const EdgeInsets.all(7.5),
-            child: Column(
-              children: [
-                Text("\n$_text1"),
-                Text("\n$_text2"),
-              ]
+      body: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            //Text content
+            Text(_title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 40), textAlign: TextAlign.center),
+            Padding(
+              padding: const EdgeInsets.all(7.5),
+              child: Column(
+                children: [
+                  Text("\n$_text1"),
+                  Text("\n$_text2"),
+                ]
+              )
+            ),
+            const SizedBox(
+              height: 40,
+            ),
+            //Video content
+            _title != "Error" ? FutureBuilder(
+              future: _initialiseVideoPlayerFuture,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.done) {
+                  // If the VideoPlayerController has finished initialization, use
+                  // the data it provides to limit the aspect ratio of the video.
+                  return AspectRatio(
+                    aspectRatio: _controller.value.aspectRatio,
+                    // Use the VideoPlayer widget to display the video.
+                    child: VideoPlayer(_controller),
+                  );
+                } else {
+                  // If the VideoPlayerController is still initializing, show a
+                  // loading spinner.
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+              },
             )
-          ),
-          const SizedBox(
-            height: 40,
-          ),
-          //Video content
-          _title != "Error" ? FutureBuilder(
-            future: _initialiseVideoPlayerFuture,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.done) {
-                // If the VideoPlayerController has finished initialization, use
-                // the data it provides to limit the aspect ratio of the video.
-                return AspectRatio(
-                  aspectRatio: _controller.value.aspectRatio,
-                  // Use the VideoPlayer widget to display the video.
-                  child: VideoPlayer(_controller),
-                );
-              } else {
-                // If the VideoPlayerController is still initializing, show a
-                // loading spinner.
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
-              }
-            },
-          )
-          : const SizedBox(height:0),
-        ]
+            : const SizedBox(height:0),
+          ]
+        ),
       ),
       //Button to control the video playback
       floatingActionButton:
