@@ -47,13 +47,12 @@ class QuestionsForm extends StatefulWidget {
 }
 
 class _QuestionsFormState extends State<QuestionsForm> {
-  final _formKey = GlobalKey<FormState>();
-  List<dynamic> answers = [null, null, null, null, null, null, null]; //The final state of all the answers
+  //[Answer1, Answer1 - other specific, Answer2, Answer2 - explain, Answer2 - other specific, Answer3, Answer3 - why, Answer4 (optional)]
+  List<dynamic> answers = [null, null, null, null, null, null, null, null]; //The final state of all the answers
   List<bool> phase = [true, false, false, false]; //Phase of answers to questions
   String? error; //A string object used to display the error text if an answer is empty
 
   void _handleSubmit(ans){
-    print(ans);
     if (widget.live){
       getParticipantNum().then((value) => firestoreQuestionsSave(ans, widget.time, widget.skip, widget.success, value));
     }
@@ -218,6 +217,25 @@ class _QuestionsFormState extends State<QuestionsForm> {
                                   });
                                 },
                                 child: const Text("The timing of the authentication was inconvenient"),
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const Text("Other (Please specify)", style: TextStyle(color: Colors.indigo, fontWeight: FontWeight.w500)),
+                                  SizedBox(
+                                      width: 200,
+                                      child: TextField(
+                                        onSubmitted: (value) {
+                                          setState(() {
+                                            answers[3] = "Other";
+                                            answers[4] = value;
+                                            phase[1] = false;
+                                            phase[2] = true;
+                                          });
+                                        },
+                                      )
+                                  )
+                                ]
                               )
                             ]
                           ),
@@ -237,11 +255,11 @@ class _QuestionsFormState extends State<QuestionsForm> {
                             child:
                             Column(
                                 children: [
-                                  const Text("Would you like to perform this authentication in a similar setting in your daily life?"),
+                                  const Text("Would you like to perform this kind of authentication in a similar setting in your daily life?"),
                                   TextButton(
                                     onPressed: (){
                                       setState((){
-                                        answers[4] = "No";
+                                        answers[5] = "No";
                                       });
                                     },
                                     child: const Text("No"),
@@ -249,7 +267,7 @@ class _QuestionsFormState extends State<QuestionsForm> {
                                   TextButton(
                                     onPressed:(){
                                       setState((){
-                                        answers[4] = "Yes";
+                                        answers[5] = "Yes";
                                       });
                                     },
                                     child: const Text("Yes"),
@@ -258,7 +276,7 @@ class _QuestionsFormState extends State<QuestionsForm> {
                             ),
                           ),
                           //Question 3b
-                          answers[4] == null ? const SizedBox(height:0) :
+                          answers[5] == null ? const SizedBox(height:0) :
                           Padding(
                             padding: const EdgeInsets.all(10),
                             child:
@@ -270,7 +288,7 @@ class _QuestionsFormState extends State<QuestionsForm> {
                                       child: TextField(
                                         onSubmitted: (value) {
                                           setState((){
-                                            answers[5] = value;
+                                            answers[6] = value;
                                             phase[2] = false;
                                             phase[3] = true;
                                           });
@@ -298,7 +316,7 @@ class _QuestionsFormState extends State<QuestionsForm> {
                               child: TextField(
                                 onChanged: (value) {
                                   setState((){
-                                    answers[6] = value;
+                                    answers[7] = value;
                                   });
                                 },
                               ),
@@ -415,7 +433,7 @@ class _QuestionsFormState extends State<QuestionsForm> {
                               phase[2] = true;
                             });
                           },
-                          child: const Text("The item was not available"),
+                          child: const Text("The item was not with me"),
                         ),
                         TextButton(
                           onPressed: () {
@@ -457,6 +475,25 @@ class _QuestionsFormState extends State<QuestionsForm> {
                           },
                           child: const Text("I've accidentally skipped"),
                         ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Text("Other (Please specify)", style: TextStyle(color: Colors.indigo, fontWeight: FontWeight.w500)),
+                            SizedBox(
+                                width: 200,
+                                child: TextField(
+                                  onSubmitted: (value) {
+                                    setState(() {
+                                      answers[2] = "Other";
+                                      answers[3] = value;
+                                      phase[1] = false;
+                                      phase[2] = true;
+                                    });
+                                  },
+                                )
+                            )
+                          ]
+                        )
                       ]
                     )
                   )
@@ -473,11 +510,11 @@ class _QuestionsFormState extends State<QuestionsForm> {
                           child:
                           Column(
                               children: [
-                                const Text("Would you like to perform this authentication in a similar setting in your daily life?"),
+                                const Text("Would you like to perform this kind of authentication in a similar setting in your daily life?"),
                                 TextButton(
                                   onPressed: (){
                                     setState((){
-                                      answers[4] = "No";
+                                      answers[5] = "No";
                                     });
                                   },
                                   child: const Text("No"),
@@ -485,7 +522,7 @@ class _QuestionsFormState extends State<QuestionsForm> {
                                 TextButton(
                                   onPressed:(){
                                     setState((){
-                                      answers[4] = "Yes";
+                                      answers[5] = "Yes";
                                     });
                                   },
                                   child: const Text("Yes"),
@@ -494,7 +531,7 @@ class _QuestionsFormState extends State<QuestionsForm> {
                           ),
                         ),
                         //Question 3b
-                        answers[4] == null ? const SizedBox(height:0) :
+                        answers[5] == null ? const SizedBox(height:0) :
                         Padding(
                           padding: const EdgeInsets.all(10),
                           child:
@@ -506,7 +543,7 @@ class _QuestionsFormState extends State<QuestionsForm> {
                                     child: TextField(
                                       onSubmitted: (value) {
                                         setState((){
-                                          answers[5] = value;
+                                          answers[6] = value;
                                           phase[2] = false;
                                           phase[3] = true;
                                         });
@@ -534,7 +571,7 @@ class _QuestionsFormState extends State<QuestionsForm> {
                                 child: TextField(
                                   onChanged: (value) {
                                     setState((){
-                                      answers[6] = value;
+                                      answers[7] = value;
                                     });
                                   },
                                 ),
@@ -649,7 +686,7 @@ class _QuestionsFormState extends State<QuestionsForm> {
                                 phase[2] = true;
                               });
                             },
-                            child: const Text("The item was not available"),
+                            child: const Text("The item was not with me"),
                           ),
                           TextButton(
                             onPressed: () {
@@ -681,6 +718,25 @@ class _QuestionsFormState extends State<QuestionsForm> {
                             },
                             child: const Text("The item was not recognised"),
                           ),
+                          Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Text("Other (Please specify)", style: TextStyle(color: Colors.indigo, fontWeight: FontWeight.w500)),
+                                SizedBox(
+                                    width: 200,
+                                    child: TextField(
+                                      onSubmitted: (value) {
+                                        setState(() {
+                                          answers[2] = "Other";
+                                          answers[3] = value;
+                                          phase[1] = false;
+                                          phase[2] = true;
+                                        });
+                                      },
+                                    )
+                                )
+                              ]
+                          )
                         ]
                       )
                   )
@@ -697,11 +753,11 @@ class _QuestionsFormState extends State<QuestionsForm> {
                               child:
                               Column(
                                   children: [
-                                    const Text("Would you like to perform this authentication in a similar setting in your daily life?"),
+                                    const Text("Would you like to perform this kind of authentication in a similar setting in your daily life?"),
                                     TextButton(
                                       onPressed: (){
                                         setState((){
-                                          answers[4] = "No";
+                                          answers[5] = "No";
                                         });
                                       },
                                       child: const Text("No"),
@@ -709,7 +765,7 @@ class _QuestionsFormState extends State<QuestionsForm> {
                                     TextButton(
                                       onPressed:(){
                                         setState((){
-                                          answers[4] = "Yes";
+                                          answers[5] = "Yes";
                                         });
                                       },
                                       child: const Text("Yes"),
@@ -718,7 +774,7 @@ class _QuestionsFormState extends State<QuestionsForm> {
                               ),
                             ),
                             //Question 3b
-                            answers[4] == null ? const SizedBox(height:0) :
+                            answers[5] == null ? const SizedBox(height:0) :
                             Padding(
                               padding: const EdgeInsets.all(10),
                               child:
@@ -730,7 +786,7 @@ class _QuestionsFormState extends State<QuestionsForm> {
                                         child: TextField(
                                           onSubmitted: (value) {
                                             setState((){
-                                              answers[5] = value;
+                                              answers[6] = value;
                                               phase[2] = false;
                                               phase[3] = true;
                                             });
@@ -758,7 +814,7 @@ class _QuestionsFormState extends State<QuestionsForm> {
                                 child: TextField(
                                   onChanged: (value) {
                                     setState((){
-                                      answers[6] = value;
+                                      answers[7] = value;
                                     });
                                   },
                                 ),
