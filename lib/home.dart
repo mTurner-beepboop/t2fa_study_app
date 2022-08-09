@@ -1,6 +1,7 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:t2fa_usability_app/questions.dart';
 import 'withdraw.dart';
 import 'tutorial.dart';
 import 'auth/auth.dart';
@@ -62,6 +63,56 @@ class _HomeState extends State<Home> {
         objText = "The object you have been assigned is: " + _strObj!;
       });
     });
+  }
+
+  ///Changes the object used
+  Future<void> _changeObj() async {
+    String objName;
+    switch (
+      await showDialog<Objects>(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return SimpleDialog(
+            title: const Text("Change object"),
+            children: <Widget>[
+              SimpleDialogOption(
+                onPressed: () {Navigator.pop(context, Objects.card);},
+                child: const Text("Credit Card"),
+              ),
+              SimpleDialogOption(
+                onPressed: () {Navigator.pop(context, Objects.pendant);},
+                child: const Text("Pendant"),
+              ),
+              SimpleDialogOption(
+                onPressed: () {Navigator.pop(context, Objects.cube);},
+                child: const Text("Cube"),
+              )
+            ]
+          );
+        }
+      )
+    ) {
+      case Objects.cube:
+      objName = "cube";
+      break;
+      case Objects.card:
+      objName = "card";
+      break;
+      case Objects.pendant:
+      objName = "pendant";
+      break;
+      case null:
+      objName = "None";
+      break;
+    }
+
+    getParticipantNum().then((number) {
+      writeInitFile(objName, number).then((_) {
+        _updateObj();
+      });
+    });
+
   }
 
   ///Pop-up for first start
@@ -230,7 +281,24 @@ class _HomeState extends State<Home> {
               },
               leading: const Icon(Icons.highlight_remove),
               title: const Text("Withdraw participation"),
-            )
+            ),
+            ListTile(
+              onTap: (){
+                Navigator.pop(context);
+                Navigator.push(
+                  context, MaterialPageRoute(builder: (context) => const Questions(skip: false, success: true, time: 0, live: false))
+                );
+              },
+              leading: const Icon(Icons.question_mark),
+              title: const Text("Questionnaire"),
+            ),
+            ListTile(
+              onTap: (){
+                _changeObj();
+              },
+              leading: const Icon(Icons.new_releases_outlined),
+              title: const Text("Change item"),
+            ),
           ]
         )
       ),

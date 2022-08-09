@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:t2fa_usability_app/home.dart';
 import '../questions.dart';
 import '../utility/firestore_save.dart';
 import 'card_auth.dart';
@@ -61,7 +62,7 @@ class _AuthState extends State<Auth> {
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder: (BuildContext context) => Questions(skip: skip, success: success, time: _initialTime, live: widget.live),
+        builder: (BuildContext context) => const Home(firstStart: false),
       ),
     );
   }
