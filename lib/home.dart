@@ -1,4 +1,3 @@
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:t2fa_usability_app/questions.dart';
@@ -230,19 +229,40 @@ class _HomeState extends State<Home> {
                 children: const [Text("Menu", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),]
               ),
             ),
-            /* //Used for debugging questionnaire page, no longer needed
             ListTile(
               onTap: () {
                 Navigator.pop(context);
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => Questions(skip: false, time: DateTime.now().millisecondsSinceEpoch)),
+                  MaterialPageRoute(builder: (context) => Questions(skip: false, time: DateTime.now().millisecondsSinceEpoch, success: true, live: false,)),
                 );
               },
               leading: const Icon(Icons.question_answer),
-              title: const Text("Questionnaire"),
+              title: const Text("Questionnaire - Success"),
             ),
-            */
+            ListTile(
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Questions(skip: false, time: DateTime.now().millisecondsSinceEpoch, success: false, live: false,)),
+                );
+              },
+              leading: const Icon(Icons.question_answer),
+              title: const Text("Questionnaire - Failure"),
+            ),
+            ListTile(
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Questions(skip: true, time: DateTime.now().millisecondsSinceEpoch, success: false, live: false,)),
+                );
+              },
+              leading: const Icon(Icons.question_answer),
+              title: const Text("Questionnaire - Skip"),
+            ),
+            /* //Not needed for demonstration purposes
             !_live ? ListTile(
               onTap: () {
                 setLiveStatus();
@@ -253,7 +273,7 @@ class _HomeState extends State<Home> {
               },
               leading: const Icon(Icons.check),
               title: const Text("Begin the Study"),
-            ) : const SizedBox(height: 0),
+            ) : const SizedBox(height: 0),*/
             ListTile(
               onTap: (){
                 Navigator.pop(context);
@@ -281,16 +301,6 @@ class _HomeState extends State<Home> {
               },
               leading: const Icon(Icons.highlight_remove),
               title: const Text("Withdraw participation"),
-            ),
-            ListTile(
-              onTap: (){
-                Navigator.pop(context);
-                Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => const Questions(skip: false, success: true, time: 0, live: false))
-                );
-              },
-              leading: const Icon(Icons.question_mark),
-              title: const Text("Questionnaire"),
             ),
             ListTile(
               onTap: (){
