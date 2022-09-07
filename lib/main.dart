@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -14,6 +15,7 @@ import 'home.dart';
 void main() async {
   //First initialise connection to firebase
   WidgetsFlutterBinding.ensureInitialized();
+
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -49,6 +51,9 @@ void main() async {
     first = true;
     //FirebaseMessaging.instance.subscribeToTopic("active_participant");
   }
+
+  //To ensure the authentication works on all devices
+  GestureBinding.instance.resamplingEnabled = false;
 
   //Display the home page here
   runApp(MainApp(firstStart: first));
